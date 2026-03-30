@@ -5,6 +5,7 @@
 [node name="Main" type="Node2D" unique_id=1029885388]
 
 [node name="Player1" parent="." unique_id=1112156649 instance=ExtResource("1_hyk8p")]
+max_health = 150
 
 [node name="Player2" parent="." unique_id=1988268218 instance=ExtResource("1_hyk8p")]
 position = Vector2(190, 114)
