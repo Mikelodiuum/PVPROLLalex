@@ -95,11 +95,11 @@ func end_round(reason):
 	next_round()
 
 func next_round():
-	print("PASANDO A SIGUIENTE RONDA")
+	print("CAMBIANDO DE RONDA")
 	
 	for player_name in scores:
 		if scores[player_name] >= 3:
-			print("WINNER WINNER CHICKEN DINNER: ", player_name)
+			print("WINNER WINNER CHICKEN DINNER FOR: ", player_name)
 			end_game()
 			return
 	
@@ -113,6 +113,6 @@ func next_round():
 	get_tree().reload_current_scene()
 
 func end_game():
-	print("=== Me cago en tu puta madre, vuelve a jugar ===")
+	print("===!VUELVE A JUGAR JODER¡===")
 	print("Puntuaciones finales: ", scores)
 	round_active = false
