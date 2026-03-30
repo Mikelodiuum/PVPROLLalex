@@ -7,6 +7,9 @@ bg_color = Color(0, 0, 0, 0.39215687)
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="FontFile" id="FontFile_rchiu"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
 cache/0/variation_coordinates = {}
 cache/0/face_index = 0
 cache/0/embolden = 0.0
@@ -28,6 +31,9 @@ cache/0/24/0/underline_thickness = 0.0
 cache/0/24/0/scale = 1.0
 
 [sub_resource type="FontFile" id="FontFile_2wgqj"]
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
 cache/0/variation_coordinates = {}
 cache/0/face_index = 0
 cache/0/embolden = 0.0
@@ -42,6 +48,46 @@ cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
 cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+cache/0/18/0/ascent = 0.0
+cache/0/18/0/descent = 0.0
+cache/0/18/0/underline_position = 0.0
+cache/0/18/0/underline_thickness = 0.0
+cache/0/18/0/scale = 1.0
+cache/0/19/0/ascent = 0.0
+cache/0/19/0/descent = 0.0
+cache/0/19/0/underline_position = 0.0
+cache/0/19/0/underline_thickness = 0.0
+cache/0/19/0/scale = 1.0
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+cache/0/21/0/ascent = 0.0
+cache/0/21/0/descent = 0.0
+cache/0/21/0/underline_position = 0.0
+cache/0/21/0/underline_thickness = 0.0
+cache/0/21/0/scale = 1.0
+cache/0/22/0/ascent = 0.0
+cache/0/22/0/descent = 0.0
+cache/0/22/0/underline_position = 0.0
+cache/0/22/0/underline_thickness = 0.0
+cache/0/22/0/scale = 1.0
+cache/0/23/0/ascent = 0.0
+cache/0/23/0/descent = 0.0
+cache/0/23/0/underline_position = 0.0
+cache/0/23/0/underline_thickness = 0.0
+cache/0/23/0/scale = 1.0
+cache/0/24/0/ascent = 0.0
+cache/0/24/0/descent = 0.0
+cache/0/24/0/underline_position = 0.0
+cache/0/24/0/underline_thickness = 0.0
+cache/0/24/0/scale = 1.0
 
 [node name="Ui" type="CanvasLayer" unique_id=384867159]
 script = ExtResource("1_b44pn")
@@ -72,16 +118,19 @@ theme_override_font_sizes/font_size = 24
 [node name="ScorePlayer2" type="Label" parent="Panel/HBoxContainer/VBoxContainer" unique_id=1089022836]
 layout_mode = 2
 theme_override_fonts/font = SubResource("FontFile_2wgqj")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 24
 
 [node name="text_puntuaciones" type="Label" parent="Panel/HBoxContainer/VBoxContainer" unique_id=204891554]
 layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Panel/HBoxContainer" unique_id=718439575]
+custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 
 [node name="RoundLabel" type="Label" parent="Panel/HBoxContainer/VBoxContainer2" unique_id=312244108]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 
 [node name="TimerLabel" type="Label" parent="Panel/HBoxContainer/VBoxContainer2" unique_id=47833731]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20

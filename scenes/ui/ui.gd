@@ -29,8 +29,8 @@ func _process(delta):
 
 func actualizar_puntuaciones():
 	var scores = game_manager.scores
-	score_p1_label.text = "Player1: " + str(scores.get("Player1", 0))
-	score_p2_label.text = "Player2: " + str(scores.get("Player2", 0))
+	score_p1_label.text = "Player 1: " + str(scores.get("Player1", 0))
+	score_p2_label.text = "Player 2: " + str(scores.get("Player2", 0))
 
 func actualizar_ronda():
 	round_label.text = "Ronda " + str(game_manager.round_number) + "/" + str(game_manager.max_rounds)
