@@ -4,18 +4,19 @@
 [ext_resource type="Script" uid="uid://c832cogutxfx" path="res://scenes/bullet/bullet.gd" id="1_83itf"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_83itf"]
-radius = 1.9996986
-height = 7.998787
+radius = 2.9995432
+height = 17.99726
 
 [node name="Bullet" type="CharacterBody2D" unique_id=1704574261]
 collision_layer = 2
 script = ExtResource("1_83itf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2138399674]
+position = Vector2(-1, 0)
 rotation = 1.553343
 shape = SubResource("CapsuleShape2D_83itf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1739076385]
-position = Vector2(3.4630302e-05, 3.796816e-05)
-scale = Vector2(0.05, 0.05)
+position = Vector2(-1, 0)
+scale = Vector2(0.11762812, 0.09967959)
 texture = ExtResource("1_7c8un")
