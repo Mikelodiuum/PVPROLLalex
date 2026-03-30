@@ -99,7 +99,7 @@ func next_round():
 	
 	for player_name in scores:
 		if scores[player_name] >= 3:
-			print("GANADOR FINAL: ", player_name)
+			print("WINNER WINNER CHICKEN DINNER: ", player_name)
 			end_game()
 			return
 	
