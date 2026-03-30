@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="BulletModifier" format=3 uid="uid://dpsv52kce1m8r"]
+
+[ext_resource type="Script" uid="uid://bxebnfdqiqafs" path="res://scenes/combat/modifiers/bulletmodifier.gd" id="1_ukhnu"]
+
+[resource]
+script = ExtResource("1_ukhnu")
+metadata/_custom_type_script = "uid://bxebnfdqiqafs"

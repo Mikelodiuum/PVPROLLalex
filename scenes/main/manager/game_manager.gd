@@ -1,5 +1,7 @@
 extends Node
 
+signal round_ended(winner_name: String)
+signal game_ended(final_winner: String)
 @export var round_time := 120.0
 var current_time := 0.0
 var players := []
@@ -82,13 +84,15 @@ func end_round(reason):
 		if is_instance_valid(p) and p.is_inside_tree():
 			alive_players.append(p)
 	
+	var winner_name = ""
 	if alive_players.size() == 1:
 		var winner = alive_players[0]
 		scores[winner.name] += 1
+		winner_name = winner.name
 		print("Gana: ", winner.name)
 	else:
 		print("Empate")
-	
+	emit_signal("round_ended", winner_name)
 	print("Puntuaciones: ", scores)
 	
 	await get_tree().create_timer(2.0).timeout
@@ -115,4 +119,12 @@ func next_round():
 func end_game():
 	print("===!VUELVE A JUGAR JODER¡===")
 	print("Puntuaciones finales: ", scores)
+	var final_winner = ""
+	for player_name in scores:
+		if scores[player_name] >= 3:
+			final_winner = player_name
+			break
+	if final_winner == "":
+		final_winner = "Empate"
+	emit_signal("game_ended", final_winner)
 	round_active = false

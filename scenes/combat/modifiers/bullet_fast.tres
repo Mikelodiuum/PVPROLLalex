@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BulletModifier" format=3 uid="uid://lk0g1pfuucbf"]
+
+[ext_resource type="Script" uid="uid://bxebnfdqiqafs" path="res://scenes/combat/modifiers/bulletmodifier.gd" id="1_k6p4c"]
+
+[resource]
+script = ExtResource("1_k6p4c")
+speed = 1200.0
+damage = 10
+color = Color(0.93344223, 0.9221693, 0, 1)
+cooldown = 0.1
+metadata/_custom_type_script = "uid://bxebnfdqiqafs"

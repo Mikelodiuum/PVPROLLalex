@@ -102,9 +102,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_t42j7")
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=1718892130]
 layout_mode = 0
 offset_left = 101.0
-offset_top = -5.0
+offset_top = -7.0
 offset_right = 1004.0
-offset_bottom = 83.0
+offset_bottom = 90.0
 theme_override_constants/separation = 40
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/HBoxContainer" unique_id=194098985]
@@ -134,3 +134,18 @@ theme_override_font_sizes/font_size = 20
 [node name="TimerLabel" type="Label" parent="Panel/HBoxContainer/VBoxContainer2" unique_id=47833731]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=230105265]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MessageLabel" type="Label" parent="CenterContainer" unique_id=698925517]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+vertical_alignment = 1
