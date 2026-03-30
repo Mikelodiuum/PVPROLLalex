@@ -1,4 +1,6 @@
 Label
+CenterContainer
+Area2D
 VBoxContainer
 HBoxContainer
 Panel

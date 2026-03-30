@@ -8,9 +8,10 @@ extends CharacterBody2D
 @export var left_input := "ui_left"
 @export var right_input := "ui_right"
 @export var shoot_input := "ui_accept"
-
+@export var bullet_modifier: BulletModifier = null
 @export var max_health := 100
-var current_health := max_health
+var current_health: int
+var can_shoot: bool = true
 
 func _physics_process(delta):
 	var direction = Vector2.ZERO
@@ -36,15 +37,28 @@ func _physics_process(delta):
 		shoot()
 
 func shoot():
+	if not can_shoot:
+		return
 	if bullet_scene == null:
 		print("ERROR: bullet_scene no asignada")
 		return
-
+	
+	can_shoot = false
+	
 	var bullet = bullet_scene.instantiate()
 	bullet.global_position = $Muzzle.global_position
 	bullet.direction = (get_global_mouse_position() - bullet.global_position).normalized()
 	bullet.shooter = self
+	if bullet_modifier:
+		bullet.modifier = bullet_modifier
 	get_parent().add_child(bullet)
+	
+	# Obtener cooldown del modificador (si no hay, usar 0.5 por defecto)
+	var cd = bullet_modifier.cooldown if bullet_modifier else 0.5
+	await get_tree().create_timer(cd).timeout
+	can_shoot = true
+
+
 
 func take_damage(amount: int):
 	current_health -= amount
@@ -53,8 +67,10 @@ func take_damage(amount: int):
 		die()
 
 func _ready():
-	name = "Player1" 
+	name = "Player1"
 	add_to_group("players")
+	current_health = max_health
+
 
 func die():
 	print(name, "muerto")

@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dkl4la3twadub"]
 
-[ext_resource type="Texture2D" uid="uid://o8frs8q13v30" path="res://sprites/Proyectilbase.svg" id="1_7c8un"]
-[ext_resource type="Script" uid="uid://c832cogutxfx" path="res://scenes/bullet/bullet.gd" id="1_83itf"]
+[ext_resource type="Texture2D" uid="uid://o8frs8q13v30" path="res://scenes/assets/sprites/Proyectilbase.svg" id="1_7c8un"]
+[ext_resource type="Script" uid="uid://c832cogutxfx" path="res://scenes/combat/weapons/basic/bullet.gd" id="1_83itf"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_83itf"]
 radius = 2.9995432
 height = 17.99726
 
-[node name="Bullet" type="CharacterBody2D" unique_id=1704574261]
+[node name="Bullet" type="Area2D" unique_id=685839355]
 collision_layer = 2
 script = ExtResource("1_83itf")
 
