@@ -1,3 +1,3 @@
+res://scenes/ui/Ui.tscn
+res://scenes/ui/ui.gd
 res://scenes/main/main.tscn
-res://scenes/main/game_manager.gd
-res://scenes/bullet/bullet.tscn
