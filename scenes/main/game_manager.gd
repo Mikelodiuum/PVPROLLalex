@@ -113,6 +113,6 @@ func next_round():
 	get_tree().reload_current_scene()
 
 func end_game():
-	print("=== ALEJANDRO PERUANO ===")
+	print("=== FIN DEL JUEGO ===")
 	print("Puntuaciones finales: ", scores)
 	round_active = false
