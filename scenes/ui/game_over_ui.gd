@@ -20,12 +20,13 @@ func _on_rematch():
 	get_tree().paused = false
 	var gm = get_node("/root/GameManager")
 	if gm:
-		gm.game_initialized = false
 		gm.scores = {}
 		gm.round_number = 1
 		gm.player_modifiers = {}
+		gm.player_abilities = {}
 		gm.round_active = false
 		gm._waiting_for_draft = false
+		gm.pending_restart = true
 	get_tree().reload_current_scene()
 	queue_free()
 

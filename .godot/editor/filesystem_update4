@@ -1,14 +1,3 @@
 res://scenes/main/main.tscn
-res://scenes/combat/abilities/ability_resource.gd
-res://scenes/combat/modifiers/bulletmodifier.gd
-res://scenes/combat/weapons/basic/bullet.gd
-res://scenes/main/manager/draft_manager.gd
-res://scenes/player/player.gd
-res://scenes/main/manager/game_config.gd
-res://scenes/main/manager/game_manager.gd
 res://scenes/main/manager/game_config_default.tres
-res://scenes/ui/draft_ui.gd
-res://scenes/ui/main_menu.gd
-res://scenes/combat/modifiers/bullet_disc.tres
-res://scenes/ui/weapon_select_ui.gd
-res://scenes/ui/weapon_draft_standalone.gd
+res://scenes/ui/game_over_ui.gd
