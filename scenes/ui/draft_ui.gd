@@ -1,213 +1,223 @@
 extends CanvasLayer
 
 ## UI del draft de modificadores post-ronda.
-## Muestra cartas con los stats de cada modifier para que el jugador elija.
-## Se crea dinámicamente — no necesita .tscn.
+## Usa draft_ui.tscn como base con layout apropiado.
+## Las cartas se crean dinámicamente pero con tamaño y clipping correctos.
 
-var _cards: Array = []             # Array de Panel (las cartas)
-var _options: Array = []           # Array de BulletModifier
+# === REFERENCIAS A NODOS DE LA ESCENA ===
+@onready var background = $Background
+@onready var title_label = $MarginContainer/VBoxContainer/TitleLabel
+@onready var subtitle_label = $MarginContainer/VBoxContainer/SubtitleLabel
+@onready var cards_container = $MarginContainer/VBoxContainer/CardsContainer
+@onready var reroll_center = $MarginContainer/VBoxContainer/RerollCenter
+
+# === ESTADO INTERNO ===
+var _cards: Array = []
+var _options: Array = []
 var _player_name := ""
 var _reroll_button: Button = null
-var _title_label: Label = null
-var _bg_panel: Panel = null
 var _draft_manager: DraftManager = null
 
 func setup(draft_mgr: DraftManager):
 	_draft_manager = draft_mgr
 	_draft_manager.show_draft_ui.connect(_on_show_draft)
 	_draft_manager.hide_draft_ui.connect(_on_hide_draft)
-	layer = 100  # Encima de todo
 	visible = false
 
 func _on_show_draft(options: Array, player_name: String, reroll_available: bool):
 	_options = options
 	_player_name = player_name
-	_clear_ui()
-	_build_ui(options, player_name, reroll_available)
+	_clear_cards()
+	_populate(options, player_name, reroll_available)
 	visible = true
 
 func _on_hide_draft():
 	visible = false
-	_clear_ui()
+	_clear_cards()
 
-func _clear_ui():
-	for child in get_children():
-		child.queue_free()
+func _clear_cards():
+	for card in _cards:
+		if is_instance_valid(card):
+			card.queue_free()
 	_cards.clear()
-	_reroll_button = null
-	_title_label = null
-	_bg_panel = null
+	if _reroll_button and is_instance_valid(_reroll_button):
+		_reroll_button.queue_free()
+		_reroll_button = null
 
-func _build_ui(options: Array, player_name: String, reroll_available: bool):
-	# === FONDO OSCURO SEMI-TRANSPARENTE ===
-	_bg_panel = Panel.new()
-	_bg_panel.anchors_preset = Control.PRESET_FULL_RECT
-	var bg_style = StyleBoxFlat.new()
-	bg_style.bg_color = Color(0, 0, 0, 0.75)
-	_bg_panel.add_theme_stylebox_override("panel", bg_style)
-	add_child(_bg_panel)
+func _populate(options: Array, player_name: String, reroll_available: bool):
+	# Actualizar textos
+	title_label.text = player_name + " — ¡Elige tu modificador!"
+	if options.size() == 2:
+		subtitle_label.text = "El ganador elige de las opciones restantes"
+	else:
+		subtitle_label.text = "Selecciona una de las opciones"
 	
-	# === CONTENEDOR PRINCIPAL ===
-	var vbox = VBoxContainer.new()
-	vbox.anchors_preset = Control.PRESET_CENTER
-	vbox.anchor_left = 0.5
-	vbox.anchor_right = 0.5
-	vbox.anchor_top = 0.5
-	vbox.anchor_bottom = 0.5
-	vbox.offset_left = -350
-	vbox.offset_right = 350
-	vbox.offset_top = -220
-	vbox.offset_bottom = 220
-	vbox.add_theme_constant_override("separation", 20)
-	add_child(vbox)
-	
-	# === TÍTULO ===
-	_title_label = Label.new()
-	_title_label.text = player_name + " — ¡Elige tu modificador!"
-	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_title_label.add_theme_font_size_override("font_size", 28)
-	_title_label.add_theme_color_override("font_color", Color(1, 0.9, 0.3))
-	vbox.add_child(_title_label)
-	
-	# === CONTENEDOR DE CARTAS ===
-	var cards_container = HBoxContainer.new()
-	cards_container.add_theme_constant_override("separation", 15)
-	cards_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	cards_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.add_child(cards_container)
-	
-	# === CREAR CARTAS ===
+	# Crear cartas
 	for i in options.size():
 		var card = _create_card(options[i], i)
 		cards_container.add_child(card)
 		_cards.append(card)
 	
-	# === BOTÓN REROLL ===
+	# Botón Reroll
 	if reroll_available:
 		_reroll_button = Button.new()
-		_reroll_button.text = "🎲  Reroll  (1 uso)"
+		_reroll_button.text = "   Reroll  (1 uso)   "
 		_reroll_button.add_theme_font_size_override("font_size", 18)
-		_reroll_button.custom_minimum_size = Vector2(200, 45)
+		_reroll_button.custom_minimum_size = Vector2(220, 45)
 		
-		var reroll_style = StyleBoxFlat.new()
-		reroll_style.bg_color = Color(0.3, 0.25, 0.5, 0.9)
-		reroll_style.corner_radius_top_left = 8
-		reroll_style.corner_radius_top_right = 8
-		reroll_style.corner_radius_bottom_left = 8
-		reroll_style.corner_radius_bottom_right = 8
-		reroll_style.border_width_left = 2
-		reroll_style.border_width_right = 2
-		reroll_style.border_width_top = 2
-		reroll_style.border_width_bottom = 2
-		reroll_style.border_color = Color(0.6, 0.4, 1.0, 0.8)
-		_reroll_button.add_theme_stylebox_override("normal", reroll_style)
-		
-		var reroll_hover = reroll_style.duplicate()
-		reroll_hover.bg_color = Color(0.4, 0.35, 0.65, 0.95)
-		_reroll_button.add_theme_stylebox_override("hover", reroll_hover)
+		var style = _make_stylebox(Color(0.25, 0.2, 0.45, 0.95), Color(0.5, 0.35, 0.9, 0.7))
+		_reroll_button.add_theme_stylebox_override("normal", style)
+		var hover = _make_stylebox(Color(0.35, 0.28, 0.6, 0.98), Color(0.6, 0.45, 1.0, 0.9))
+		_reroll_button.add_theme_stylebox_override("hover", hover)
+		var pressed = _make_stylebox(Color(0.2, 0.15, 0.35, 0.98), Color(0.5, 0.35, 0.9, 0.7))
+		_reroll_button.add_theme_stylebox_override("pressed", pressed)
 		
 		_reroll_button.pressed.connect(_on_reroll_pressed)
-		
-		var center = CenterContainer.new()
-		center.add_child(_reroll_button)
-		vbox.add_child(center)
+		reroll_center.add_child(_reroll_button)
 
-func _create_card(modifier: BulletModifier, index: int) -> Panel:
-	var card = Panel.new()
-	card.custom_minimum_size = Vector2(200, 280)
+func _create_card(modifier: BulletModifier, index: int) -> PanelContainer:
+	# PanelContainer para que el contenido se clipee automáticamente
+	var card = PanelContainer.new()
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(180, 0)
 	
 	# Estilo de la carta
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.12, 0.13, 0.18, 0.95)
-	style.corner_radius_top_left = 10
-	style.corner_radius_top_right = 10
-	style.corner_radius_bottom_left = 10
-	style.corner_radius_bottom_right = 10
+	style.bg_color = Color(0.1, 0.1, 0.15, 0.95)
+	style.set_corner_radius_all(12)
 	style.border_width_left = 2
 	style.border_width_right = 2
-	style.border_width_top = 2
+	style.border_width_top = 3
 	style.border_width_bottom = 2
-	style.border_color = modifier.icon_color * Color(1, 1, 1, 0.6)
+	style.border_color = modifier.icon_color * Color(1, 1, 1, 0.5)
+	style.content_margin_left = 14
+	style.content_margin_right = 14
+	style.content_margin_top = 14
+	style.content_margin_bottom = 14
 	card.add_theme_stylebox_override("panel", style)
 	
-	# VBox para el contenido de la carta
-	var content = VBoxContainer.new()
-	content.anchors_preset = Control.PRESET_FULL_RECT
-	content.offset_left = 12
-	content.offset_right = -12
-	content.offset_top = 12
-	content.offset_bottom = -12
-	content.add_theme_constant_override("separation", 6)
-	card.add_child(content)
+	# Contenedor principal de la carta
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	card.add_child(vbox)
 	
-	# Nombre del modifier
+	# === NOMBRE ===
 	var name_label = Label.new()
-	name_label.text = modifier.modifier_name
+	name_label.text = modifier.modifier_name.to_upper()
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 22)
+	name_label.add_theme_font_size_override("font_size", 20)
 	name_label.add_theme_color_override("font_color", modifier.icon_color)
-	content.add_child(name_label)
+	name_label.clip_text = true
+	vbox.add_child(name_label)
 	
-	# Separador visual
-	var sep = HSeparator.new()
-	content.add_child(sep)
+	# === LÍNEA DE COLOR ===
+	var color_line = ColorRect.new()
+	color_line.color = modifier.icon_color * Color(1, 1, 1, 0.4)
+	color_line.custom_minimum_size = Vector2(0, 2)
+	vbox.add_child(color_line)
 	
-	# Descripción
-	var desc_label = Label.new()
+	# === DESCRIPCIÓN ===
+	var desc_label = RichTextLabel.new()
 	desc_label.text = modifier.description if modifier.description != "" else "Sin descripción"
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 12)
-	desc_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.75))
-	desc_label.custom_minimum_size.y = 50
-	content.add_child(desc_label)
+	desc_label.fit_content = true
+	desc_label.scroll_active = false
+	desc_label.bbcode_enabled = false
+	desc_label.custom_minimum_size = Vector2(0, 40)
+	desc_label.add_theme_font_size_override("normal_font_size", 12)
+	desc_label.add_theme_color_override("default_color", Color(0.6, 0.6, 0.65))
+	vbox.add_child(desc_label)
 	
-	# Stats
-	var stats_text = ""
-	stats_text += "⚡ VEL: " + str(int(modifier.speed)) + "\n"
-	stats_text += "💥 DMG: " + str(modifier.damage) + "\n"
-	stats_text += "⏱️ CD: " + str(modifier.cooldown) + "s\n"
+	# === SEPARADOR ===
+	var sep = HSeparator.new()
+	sep.add_theme_constant_override("separation", 4)
+	vbox.add_child(sep)
+	
+	# === STATS (Grid para alineación limpia) ===
+	var stats_grid = GridContainer.new()
+	stats_grid.columns = 2
+	stats_grid.add_theme_constant_override("h_separation", 8)
+	stats_grid.add_theme_constant_override("v_separation", 2)
+	vbox.add_child(stats_grid)
+	
+	_add_stat(stats_grid, "VEL", str(int(modifier.speed)), Color(0.5, 0.8, 1.0))
+	_add_stat(stats_grid, "DMG", str(modifier.damage), Color(1.0, 0.5, 0.4))
+	_add_stat(stats_grid, "CD", str(modifier.cooldown) + "s", Color(0.9, 0.85, 0.4))
 	if modifier.pierce > 1:
-		stats_text += "🔱 Pierce: " + str(modifier.pierce) + "\n"
+		_add_stat(stats_grid, "PIERCE", str(modifier.pierce), Color(0.7, 0.5, 1.0))
 	if modifier.bullet_count > 1:
-		stats_text += "🔫 Balas: " + str(modifier.bullet_count) + "\n"
-		stats_text += "📐 Spread: " + str(modifier.spread_angle) + "°\n"
+		_add_stat(stats_grid, "BALAS", str(modifier.bullet_count), Color(1.0, 0.7, 0.3))
+		_add_stat(stats_grid, "SPREAD", str(modifier.spread_angle) + "°", Color(0.8, 0.8, 0.5))
 	if modifier.scale != 1.0:
-		stats_text += "📏 Tamaño: x" + str(modifier.scale) + "\n"
+		_add_stat(stats_grid, "SIZE", "x" + str(modifier.scale), Color(0.6, 0.9, 0.6))
 	
-	var stats_label = Label.new()
-	stats_label.text = stats_text.strip_edges()
-	stats_label.add_theme_font_size_override("font_size", 14)
-	stats_label.add_theme_color_override("font_color", Color(0.85, 0.85, 0.9))
-	content.add_child(stats_label)
-	
-	# Espaciador flexible
+	# === ESPACIADOR FLEXIBLE ===
 	var spacer = Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content.add_child(spacer)
+	vbox.add_child(spacer)
 	
-	# Botón "Elegir"
+	# === BOTÓN ELEGIR ===
 	var btn = Button.new()
-	btn.text = "Elegir"
-	btn.add_theme_font_size_override("font_size", 16)
-	btn.custom_minimum_size = Vector2(0, 38)
+	btn.text = "ELEGIR"
+	btn.add_theme_font_size_override("font_size", 15)
+	btn.custom_minimum_size = Vector2(0, 40)
 	
-	var btn_style = StyleBoxFlat.new()
-	btn_style.bg_color = modifier.icon_color * Color(0.5, 0.5, 0.5, 0.8)
-	btn_style.corner_radius_top_left = 6
-	btn_style.corner_radius_top_right = 6
-	btn_style.corner_radius_bottom_left = 6
-	btn_style.corner_radius_bottom_right = 6
-	btn.add_theme_stylebox_override("normal", btn_style)
+	var btn_normal = _make_stylebox(
+		modifier.icon_color * Color(0.35, 0.35, 0.35, 0.85),
+		modifier.icon_color * Color(0.6, 0.6, 0.6, 0.5)
+	)
+	btn.add_theme_stylebox_override("normal", btn_normal)
 	
-	var btn_hover = btn_style.duplicate()
-	btn_hover.bg_color = modifier.icon_color * Color(0.7, 0.7, 0.7, 0.95)
+	var btn_hover = _make_stylebox(
+		modifier.icon_color * Color(0.5, 0.5, 0.5, 0.95),
+		modifier.icon_color * Color(0.8, 0.8, 0.8, 0.8)
+	)
 	btn.add_theme_stylebox_override("hover", btn_hover)
 	
+	var btn_pressed = _make_stylebox(
+		modifier.icon_color * Color(0.25, 0.25, 0.25, 0.9),
+		modifier.icon_color * Color(0.5, 0.5, 0.5, 0.6)
+	)
+	btn.add_theme_stylebox_override("pressed", btn_pressed)
+	
 	btn.pressed.connect(_on_card_selected.bind(index))
-	content.add_child(btn)
+	vbox.add_child(btn)
 	
 	return card
+
+# === HELPERS ===
+
+func _add_stat(grid: GridContainer, label_text: String, value_text: String, color: Color):
+	var lbl = Label.new()
+	lbl.text = label_text
+	lbl.add_theme_font_size_override("font_size", 13)
+	lbl.add_theme_color_override("font_color", Color(0.45, 0.45, 0.5))
+	lbl.clip_text = true
+	grid.add_child(lbl)
+	
+	var val = Label.new()
+	val.text = value_text
+	val.add_theme_font_size_override("font_size", 14)
+	val.add_theme_color_override("font_color", color)
+	val.clip_text = true
+	grid.add_child(val)
+
+func _make_stylebox(bg: Color, border: Color) -> StyleBoxFlat:
+	var s = StyleBoxFlat.new()
+	s.bg_color = bg
+	s.set_corner_radius_all(8)
+	s.border_width_left = 1
+	s.border_width_right = 1
+	s.border_width_top = 1
+	s.border_width_bottom = 1
+	s.border_color = border
+	s.content_margin_left = 8
+	s.content_margin_right = 8
+	s.content_margin_top = 6
+	s.content_margin_bottom = 6
+	return s
+
+# === CALLBACKS ===
 
 func _on_card_selected(index: int):
 	if _draft_manager:

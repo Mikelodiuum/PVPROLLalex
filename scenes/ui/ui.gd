@@ -40,7 +40,7 @@ func actualizar_puntuaciones():
 	score_p2_label.text = "Player 2: " + str(scores.get("Player2", 0))
 
 func actualizar_ronda():
-	round_label.text = "Ronda " + str(game_manager.round_number) + "/" + str(game_manager.max_rounds)
+	round_label.text = "Ronda " + str(game_manager.round_number) + "/" + str(game_manager.config.max_rounds)
 
 func actualizar_temporizador():
 	if game_manager.round_active:

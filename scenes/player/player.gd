@@ -13,6 +13,14 @@ extends CharacterBody2D
 @export var left_input := "ui_left"
 @export var right_input := "ui_right"
 @export var shoot_input := "ui_accept"
+@export var dash_input := "ui_shift"
+
+# Dash config
+@export_group("Dash")
+@export var dash_speed := 900.0
+@export var dash_duration := 0.15
+@export var dash_cooldown := 1.2
+
 
 # Combate
 @export var bullet_modifier: BulletModifier = null
@@ -23,6 +31,10 @@ var can_shoot: bool = true
 # Estado
 var frozen := false   # True durante countdown — bloquea movimiento, rotación y disparo
 var shield: int = 0   # Escudo temporal (absorbe daño antes de la vida)
+var is_dashing := false
+var dash_timer := 0.0
+var _dash_direction := Vector2.ZERO
+
 
 # Referencias a la barra de vida
 @onready var health_bar = $HealthBarPivot/HealthBar
@@ -40,29 +52,59 @@ func _ready():
 func _physics_process(delta):
 	# Si está congelado (countdown), no procesar input
 	if not frozen:
-		# === MOVIMIENTO ===
-		var direction = Vector2.ZERO
-		if Input.is_action_pressed(right_input):
-			direction.x += 1
-		if Input.is_action_pressed(left_input):
-			direction.x -= 1
-		if Input.is_action_pressed(down_input):
-			direction.y += 1
-		if Input.is_action_pressed(up_input):
-			direction.y -= 1
+		if dash_timer > 0:
+			dash_timer -= delta
 
-		direction = direction.normalized()
-		velocity = direction * speed
-		move_and_slide()
+		if is_dashing:
+			velocity = _dash_direction * dash_speed
+			move_and_slide()
+		else:
+			# === MOVIMIENTO ===
+			var direction = Vector2.ZERO
+			if Input.is_action_pressed(right_input):
+				direction.x += 1
+			if Input.is_action_pressed(left_input):
+				direction.x -= 1
+			if Input.is_action_pressed(down_input):
+				direction.y += 1
+			if Input.is_action_pressed(up_input):
+				direction.y -= 1
 
-		# === APUNTADO ===
-		var mouse_position = get_global_mouse_position()
-		var direction_to_mouse = mouse_position - global_position
-		rotation = direction_to_mouse.angle()
+			direction = direction.normalized()
+			
+			# Detectar Dash
+			var wants_dash = false
+			if dash_input != "" and InputMap.has_action(dash_input):
+				wants_dash = Input.is_action_just_pressed(dash_input)
+			elif dash_input == "ui_shift":
+				wants_dash = Input.is_physical_key_pressed(KEY_SHIFT)
 
-		# === DISPARO ===
-		if Input.is_action_just_pressed(shoot_input):
-			shoot()
+			if wants_dash and dash_timer <= 0 and direction != Vector2.ZERO:
+				is_dashing = true
+				dash_timer = dash_cooldown
+				_dash_direction = direction
+				
+				# Tinte visual (ghost)
+				if has_node("Sprite2D"):
+					var tw = create_tween()
+					tw.tween_property($Sprite2D, "modulate:a", 0.3, 0.05)
+					tw.tween_property($Sprite2D, "modulate:a", 1.0, dash_duration)
+				
+				await get_tree().create_timer(dash_duration).timeout
+				is_dashing = false
+			else:
+				velocity = direction * speed
+				move_and_slide()
+
+			# === APUNTADO ===
+			var mouse_position = get_global_mouse_position()
+			var direction_to_mouse = mouse_position - global_position
+			rotation = direction_to_mouse.angle()
+
+			# === DISPARO ===
+			if Input.is_action_just_pressed(shoot_input):
+				shoot()
+
 	
 	# La barra de vida siempre se mantiene horizontal (incluso congelado)
 	if health_bar_pivot:
