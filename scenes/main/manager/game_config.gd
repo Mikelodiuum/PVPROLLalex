@@ -19,11 +19,14 @@ class_name GameConfig
 @export var default_speed := 300.0              ## Velocidad por defecto de movimiento
 @export var default_modifier: BulletModifier    ## Modifier por defecto (si no se asigna uno)
 
-@export_group("Draft")
+@export_group("Armas y Loadout")
+@export var weapons_per_loadout := 3            ## Cuántas armas puede llevar cada jugador
+@export var weapon_select_enabled := true        ## Mostrar selector de arma activa entre rondas
+
+@export_group("Habilidades (Draft)")
 @export var draft_enabled := true               ## Activar/desactivar el draft entre rondas
-@export var draft_options_count := 3            ## Cuántas opciones se muestran
-@export var draft_rerolls := 1                  ## Rerolls disponibles para el perdedor
-@export var draft_on_tie := false               ## Si hacer draft también en empates
+@export var draft_options_count := 3            ## Cuántas habilidades se muestran al ganador
+@export var draft_on_tie := false               ## Hacer draft también en empates
 
 @export_group("Pickups")
 @export var pickups_enabled := true             ## Activar/desactivar pickups en el mapa
@@ -32,5 +35,5 @@ class_name GameConfig
 @export var pickup_stagger := 0.15              ## Delay entre spawns escalonados (s)
 
 @export_group("Tiempos de Transición")
-@export var round_end_delay := 2.0              ## Delay entre fin de ronda y draft/siguiente ronda (s)
+@export var round_end_delay := 2.0              ## Delay entre fin de ronda y selector/draft (s)
 @export var fight_message_duration := 0.8       ## Duración del mensaje "FIGHT!" (s)
