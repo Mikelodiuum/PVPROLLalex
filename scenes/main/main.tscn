@@ -2,24 +2,26 @@
 
 [ext_resource type="PackedScene" uid="uid://g2rlkox26jt0" path="res://scenes/player/player.tscn" id="1_hyk8p"]
 [ext_resource type="PackedScene" uid="uid://dfijv6r12dm46" path="res://scenes/ui/Ui.tscn" id="2_iuonh"]
-[ext_resource type="Resource" uid="uid://lk0g1pfuucbf" path="res://scenes/combat/modifiers/bullet_fast.tres" id="2_l3cfh"]
-[ext_resource type="Resource" uid="uid://bftqyiqy56ida" path="res://scenes/combat/modifiers/bullet_heavy.tres" id="3_6q06x"]
+[ext_resource type="Resource" uid="uid://dpsv52kce1m8r" path="res://scenes/combat/modifiers/bullet_normal.tres" id="3_l3cfh"]
+[ext_resource type="PackedScene" uid="uid://d08hbunc0gdo1" path="res://scenes/maps/arena_simple.tscn" id="5_arena"]
 
 [node name="Main" type="Node2D" unique_id=1029885388]
 
+[node name="Arena" parent="." unique_id=1197235762 instance=ExtResource("5_arena")]
+
 [node name="Player1" parent="." unique_id=1112156649 instance=ExtResource("1_hyk8p")]
-position = Vector2(193, 386)
-bullet_modifier = ExtResource("2_l3cfh")
+position = Vector2(150, 324)
+bullet_modifier = ExtResource("3_l3cfh")
 max_health = 200
 
 [node name="Player2" parent="." unique_id=1988268218 instance=ExtResource("1_hyk8p")]
-position = Vector2(912, 391)
+position = Vector2(1002, 324)
 up_input = "ui_up_p2"
 down_input = "ui_down_p2"
 left_input = "ui_left_p2"
 right_input = "ui_right_p2"
 shoot_input = "ui_accept_p2"
-bullet_modifier = ExtResource("3_6q06x")
+bullet_modifier = ExtResource("3_l3cfh")
 max_health = 200
 
 [node name="Ui" parent="." unique_id=384867159 instance=ExtResource("2_iuonh")]

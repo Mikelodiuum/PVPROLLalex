@@ -1,12 +1,14 @@
 extends CanvasLayer
 
+## HUD del juego: puntuaciones, ronda, temporizador, mensajes centrales y countdown.
+
 # Referencias a los nodos de texto de la barra superior
 @onready var score_p1_label = $Panel/HBoxContainer/VBoxContainer/ScorePlayer1
 @onready var score_p2_label = $Panel/HBoxContainer/VBoxContainer/ScorePlayer2
 @onready var round_label = $Panel/HBoxContainer/VBoxContainer2/RoundLabel
 @onready var timer_label = $Panel/HBoxContainer/VBoxContainer2/TimerLabel
 
-# Referencia al nuevo Label central
+# Referencia al Label central
 @onready var message_label = $CenterContainer/MessageLabel
 
 # Referencia al GameManager
@@ -15,9 +17,10 @@ var game_manager
 func _ready():
 	game_manager = get_node("/root/GameManager")
 	if game_manager:
-		# Conectar las señales
+		# Conectar señales
 		game_manager.round_ended.connect(_on_round_ended)
 		game_manager.game_ended.connect(_on_game_ended)
+		game_manager.countdown_tick.connect(_on_countdown_tick)
 		# Actualización inicial
 		actualizar_puntuaciones()
 		actualizar_ronda()
@@ -37,7 +40,7 @@ func actualizar_puntuaciones():
 	score_p2_label.text = "Player 2: " + str(scores.get("Player2", 0))
 
 func actualizar_ronda():
-	round_label.text = "Ronda " + str(game_manager.round_number) + "/" + str(game_manager.max_rounds)
+	round_label.text = "Ronda " + str(game_manager.round_number) + "/" + str(game_manager.config.max_rounds)
 
 func actualizar_temporizador():
 	if game_manager.round_active:
@@ -52,7 +55,7 @@ func formatear_tiempo(segundos: float) -> String:
 	return "%02d:%02d" % [minutos, segs]
 
 # ============================================
-# FUNCIONES PARA LOS MENSAJES CENTRALES
+# MENSAJES CENTRALES
 # ============================================
 
 func show_message(text: String, duration: float = 2.0):
@@ -69,3 +72,9 @@ func _on_round_ended(winner_name: String):
 
 func _on_game_ended(final_winner: String):
 	show_message("¡" + final_winner + " es el CAMPEÓN!", 4.0)
+
+func _on_countdown_tick(number: int):
+	if number > 0:
+		show_message(str(number), 0.8)
+	else:
+		show_message("¡FIGHT!", 0.8)

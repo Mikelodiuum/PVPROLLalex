@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="GameConfig" format=3 uid="uid://dhcppnxpgubcm"]
+
+[ext_resource type="Script" uid="uid://doqol7b6am8ob" path="res://scenes/main/manager/game_config.gd" id="1_config"]
+[ext_resource type="Resource" uid="uid://dpsv52kce1m8r" path="res://scenes/combat/modifiers/bullet_normal.tres" id="1_ki1fn"]
+
+[resource]
+script = ExtResource("1_config")
+default_modifier = ExtResource("1_ki1fn")

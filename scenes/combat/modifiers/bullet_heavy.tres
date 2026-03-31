@@ -4,6 +4,9 @@
 
 [resource]
 script = ExtResource("1_vqq4t")
+modifier_name = "Heavy"
+description = "Balas pesadas y lentas pero devastadoras. Atraviesan enemigos."
+icon_color = Color(0.77, 0.17, 0, 1)
 speed = 400.0
 damage = 50
 pierce = 2

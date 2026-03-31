@@ -1,13 +1,3 @@
-res://scenes/ui/Ui.tscn
-res://scenes/ui/ui.gd
-res://scenes/combat/modifiers/bulletmodifier.gd
-res://scenes/combat/weapons/basic/bullet.gd
-res://scenes/player/player2.gd
-res://scenes/player/player.gd
-res://scenes/main/main.tscn
-res://scenes/combat/modifiers/bullet_fast.tres
-res://scenes/combat/modifiers/bullet_heavy.tres
-res://scenes/player/player.tscn
-res://player.gd
-res://scenes/combat/weapons/basic/bullet.tscn
 res://scenes/main/manager/game_manager.gd
+res://scenes/main/main.tscn
+res://scenes/main/manager/game_config.gd
