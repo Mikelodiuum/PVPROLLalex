@@ -21,15 +21,25 @@ class_name GameConfig
 
 @export_group("Draft")
 @export var draft_enabled := true               ## Activar/desactivar el draft entre rondas
+<<<<<<< Updated upstream
 @export var draft_options_count := 3            ## Cuántas opciones se muestran
 @export var draft_rerolls := 1                  ## Rerolls disponibles para el perdedor
 @export var draft_on_tie := false               ## Si hacer draft también en empates
+=======
+@export var draft_options_count := 3            ## Cuántas habilidades se muestran al perdedor (elige primero)
+@export var draft_on_tie := false               ## Hacer draft también en empates
+@export var winner_reroll_count: int = 1        ## Rerolls disponibles para el ganador (elige de las restantes)
+>>>>>>> Stashed changes
 
 @export_group("Pickups")
 @export var pickups_enabled := true             ## Activar/desactivar pickups en el mapa
 @export var pickup_respawn_time := 8.0          ## Tiempo de respawn tras recoger (s)
 @export var pickup_initial_delay := 0.0         ## Delay antes del primer spawn (s)
 @export var pickup_stagger := 0.15              ## Delay entre spawns escalonados (s)
+
+@export_group("CPU (Player 2)")
+@export var p2_is_cpu: bool = true              ## true = Player2 controlado por IA | false = segundo jugador humano
+@export_range(0, 2) var cpu_difficulty: int = 1 ## Dificultad de la IA: 0=Fácil  1=Normal  2=Difícil
 
 @export_group("Tiempos de Transición")
 @export var round_end_delay := 2.0              ## Delay entre fin de ronda y draft/siguiente ronda (s)

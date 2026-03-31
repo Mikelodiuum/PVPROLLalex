@@ -1,2 +1,13 @@
 res://scenes/main/main.tscn
+<<<<<<< Updated upstream
 res://scenes/combat/modifiers/bullet_disc.tres
+=======
+res://scenes/combat/abilities/ability_resource.gd
+res://scenes/combat/modifiers/bulletmodifier.gd
+res://scenes/combat/weapons/basic/bullet.gd
+res://scenes/main/manager/draft_manager.gd
+res://scenes/player/player.gd
+res://scenes/main/manager/game_config.gd
+res://scenes/main/manager/game_manager.gd
+res://scenes/main/manager/game_config_default.tres
+>>>>>>> Stashed changes

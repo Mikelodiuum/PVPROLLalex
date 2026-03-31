@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AbilityResource" format=3]
+
+[ext_resource type="Script" path="res://scenes/combat/abilities/ability_resource.gd" id="1_ability"]
+
+[resource]
+script = ExtResource("1_ability")
+ability_name = "Proyectil Veloz"
+description = "Tus balas viajan un 75% más rápido. Mucho más difíciles de esquivar."
+icon_color = Color(0.2, 0.9, 1.0, 1)
+bullet_speed_multiplier = 1.75

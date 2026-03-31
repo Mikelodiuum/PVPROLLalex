@@ -49,11 +49,34 @@ func _ready():
 		_setup_draft()
 		pending_restart = true
 
+<<<<<<< Updated upstream
 func _setup_draft():
 	if not config.draft_enabled:
 		return
 	
 	# Crear DraftManager si no existe
+=======
+func _reset_match_state():
+	## Reinicia solo el estado de partida (no el loadout — ese persiste)
+	player_weapon_index = {}
+	player_abilities    = {}
+
+## Llamado por game_over_ui.gd al pulsar Rematch o Menú.
+## Centraliza el reset en GameManager para que la UI no necesite conocer la estructura interna.
+func reset_for_rematch():
+	game_initialized  = false
+	scores            = {}
+	round_number      = 1
+	round_active      = false
+	_waiting_for_draft = false
+	_waiting_for_weapon_select = false
+	ending_round      = false
+	pending_restart   = false
+	_reset_match_state()
+
+func _setup_systems():
+	# DraftManager
+>>>>>>> Stashed changes
 	if draft_manager == null:
 		draft_manager = DraftManager.new()
 		draft_manager.name = "DraftManager"
@@ -125,6 +148,40 @@ func start_round():
 	current_time = config.round_time
 	round_active = true
 
+<<<<<<< Updated upstream
+=======
+func _apply_player1_state(p: Node):
+	## Aplica arma activa y habilidades acumuladas a Player1
+	if player_loadouts.has("Player1") and player_loadouts["Player1"].size() > 0:
+		p.weapon_loadout = player_loadouts["Player1"]
+	if not player_weapon_index.has("Player1"):
+		player_weapon_index["Player1"] = 0
+	p.active_weapon_index = player_weapon_index.get("Player1", 0)
+	p.active_abilities    = player_abilities.get("Player1", [])
+	p.refresh_effective_modifier()
+
+func _apply_bot_weapon(p: Node):
+	## Asigna arma aleatoria y aplica configuración de CPU/humano al Player2
+	var path = BOT_WEAPON_POOL[randi() % BOT_WEAPON_POOL.size()]
+	if ResourceLoader.exists(path):
+		var weapon = load(path)
+		if weapon is BulletModifier:
+			p.bullet_modifier = weapon
+			p.weapon_loadout  = [weapon]
+			p.active_weapon_index = 0
+			p.active_abilities    = []
+			p.refresh_effective_modifier()
+			print(p.name, " (bot) usa arma: ", weapon.modifier_name)
+	# Aplicar modo CPU según config
+	if p.has_method("set_cpu_mode"):
+		var is_cpu = config.p2_is_cpu if config else true
+		var diff   = config.cpu_difficulty if config else 1
+		p.set_cpu_mode(is_cpu, diff)
+
+# =========================================================
+# CHEQUEO DE JUGADORES VIVOS
+# =========================================================
+>>>>>>> Stashed changes
 func check_players_alive():
 	if players.size() == 0:
 		return

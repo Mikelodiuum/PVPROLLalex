@@ -1,1 +1,2 @@
+AbilityResource
 BulletModifier
