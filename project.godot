@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 GameManager="*uid://dha6y3pr53wly"
 
+[display]
+
+window/size/initial_screen=4
+
 [input]
 
 ui_accept={

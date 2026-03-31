@@ -21,15 +21,9 @@ class_name GameConfig
 
 @export_group("Draft")
 @export var draft_enabled := true               ## Activar/desactivar el draft entre rondas
-<<<<<<< Updated upstream
-@export var draft_options_count := 3            ## Cuántas opciones se muestran
-@export var draft_rerolls := 1                  ## Rerolls disponibles para el perdedor
+@export var draft_options_count := 3            ## Cuántas habilidades se muestran
 @export var draft_on_tie := false               ## Si hacer draft también en empates
-=======
-@export var draft_options_count := 3            ## Cuántas habilidades se muestran al perdedor (elige primero)
-@export var draft_on_tie := false               ## Hacer draft también en empates
-@export var winner_reroll_count: int = 1        ## Rerolls disponibles para el ganador (elige de las restantes)
->>>>>>> Stashed changes
+@export var loser_reroll_count: int = 1         ## Rerolls disponibles para el perdedor
 
 @export_group("Pickups")
 @export var pickups_enabled := true             ## Activar/desactivar pickups en el mapa

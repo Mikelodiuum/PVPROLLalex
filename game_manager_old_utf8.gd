@@ -1,14 +1,14 @@
-extends Node
+﻿extends Node
 
-## GameManager (Autoload) — Controla el flujo del juego:
+## GameManager (Autoload) ÔÇö Controla el flujo del juego:
 ## rondas, puntuaciones, countdown, spawn points, draft de modificadores y transiciones.
-## Usa GameConfig (.tres) para toda la configuración — editable sin programar.
+## Usa GameConfig (.tres) para toda la configuraci├│n ÔÇö editable sin programar.
 
 signal round_ended(winner_name: String)
 signal game_ended(final_winner: String)
 signal countdown_tick(number: int)
 
-# === CONFIGURACIÓN (editar game_config_default.tres en el Inspector) ===
+# === CONFIGURACI├ôN (editar game_config_default.tres en el Inspector) ===
 var config: GameConfig = null
 
 # === ESTADO DEL JUEGO ===
@@ -22,61 +22,68 @@ var ending_round := false
 var pending_restart := false
 
 # === DRAFT DE MODIFICADORES ===
-var player_modifiers = {}            # "Player1" → BulletModifier (Arma equipada esta ronda)
-var player_weapon_loadouts = {}      # "Player1" → Array[BulletModifier] (Inventario global 3 armas)
-var player_abilities = {}            # "Player1" → Array[AbilityResource]
+var player_modifiers = {}            # "Player1" ÔåÆ BulletModifier (persiste entre rondas)
 var draft_manager: DraftManager = null
 var draft_ui = null                  # DraftUI (CanvasLayer)
 var _waiting_for_draft := false
 var _last_winner := ""
 var _last_loser := ""
-var global_weapon_pool := []
 
 func _ready():
-	# Cargar configuración
+	# Cargar configuraci├│n
 	if config == null:
 		var loaded = load("res://scenes/main/manager/game_config_default.tres")
 		if loaded is GameConfig:
 			config = loaded
 		else:
 			config = GameConfig.new()
-			print("AVISO: No se encontró game_config_default.tres, usando valores por defecto")
+			print("AVISO: No se encontr├│ game_config_default.tres, usando valores por defecto")
 	
 	if not game_initialized:
 		game_initialized = true
 		scores = {}
 		round_number = 1
-		player_modifiers = {}
-		player_weapon_loadouts = {}
-		player_abilities = {}
-		_load_global_weapons()
 		_setup_draft()
 		pending_restart = true
 	else:
 		_setup_draft()
 		pending_restart = true
 
-func _load_global_weapons():
-	global_weapon_pool.clear()
-	var path = "res://scenes/combat/modifiers/"
-	var dir = DirAccess.open(path)
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if file_name.ends_with(".tres") or file_name.ends_with(".res"):
-				var res = load(path + file_name)
-				if res is BulletModifier:
-					global_weapon_pool.append(res)
-			file_name = dir.get_next()
-
+<<<<<<< Updated upstream
 func _setup_draft():
+	if not config.draft_enabled:
+		return
+	
+	# Crear DraftManager si no existe
+=======
+func _reset_match_state():
+	## Reinicia solo el estado de partida (no el loadout ÔÇö ese persiste)
+	player_weapon_index = {}
+	player_abilities    = {}
+
+## Llamado por game_over_ui.gd al pulsar Rematch o Men├║.
+## Centraliza el reset en GameManager para que la UI no necesite conocer la estructura interna.
+func reset_for_rematch():
+	game_initialized  = false
+	scores            = {}
+	round_number      = 1
+	round_active      = false
+	_waiting_for_draft = false
+	_waiting_for_weapon_select = false
+	ending_round      = false
+	pending_restart   = false
+	_reset_match_state()
+
+func _setup_systems():
+	# DraftManager
+>>>>>>> Stashed changes
 	if draft_manager == null:
 		draft_manager = DraftManager.new()
 		draft_manager.name = "DraftManager"
 		add_child(draft_manager)
 		draft_manager.draft_completed.connect(_on_draft_completed)
 	
+	# Crear DraftUI desde la escena .tscn si no existe
 	if draft_ui == null:
 		var draft_scene = load("res://scenes/ui/draft_ui.tscn")
 		if draft_scene:
@@ -84,20 +91,7 @@ func _setup_draft():
 			add_child(draft_ui)
 			draft_ui.setup(draft_manager)
 		else:
-			print("ERROR: No se encontró draft_ui.tscn")
-
-## Llamado por game_over_ui.gd al pulsar Rematch o Menú.
-func reset_for_rematch():
-	game_initialized  = false
-	scores            = {}
-	round_number      = 1
-	round_active      = false
-	_waiting_for_draft = false
-	ending_round      = false
-	pending_restart   = false
-	player_modifiers  = {}
-	player_weapon_loadouts = {}
-	player_abilities  = {}
+			print("ERROR: No se encontr├│ draft_ui.tscn")
 
 func start_round():
 	await get_tree().process_frame
@@ -108,11 +102,6 @@ func start_round():
 	
 	players = get_tree().get_nodes_in_group("players")
 	print("Players detectados: ", players.size())
-	
-	# === ASIGNAR ARMA POR DEFECTO (SLOT 1) SI NO HAY NINGUNA EQUIPADA ===
-	for p_name in player_weapon_loadouts:
-		if not player_modifiers.has(p_name) and player_weapon_loadouts[p_name].size() > 0:
-			player_modifiers[p_name] = player_weapon_loadouts[p_name][0]
 	
 	# Posicionar jugadores en los spawn points de la arena
 	var arena = get_tree().get_first_node_in_group("arena")
@@ -132,20 +121,11 @@ func start_round():
 				arena.add_child(spawner)
 				spawner.setup(pickup_spawns, arena)
 	
-	# === APLICAR MODIFICADORES Y CPU ===
+	# === APLICAR MODIFICADORES PERSISTENTES DEL DRAFT ===
 	for p in players:
 		if player_modifiers.has(p.name):
 			p.bullet_modifier = player_modifiers[p.name]
-		# Aplicar Habilidades Activas
-		if player_abilities.has(p.name):
-			p.active_abilities = player_abilities[p.name].duplicate()
-		p.refresh_effective_modifier()
-		print(p.name, " usa arma: ", p.bullet_modifier.modifier_name if p.bullet_modifier else "Default")
-
-		if p.name == "Player2" and p.has_method("set_cpu_mode"):
-			var is_cpu = config.p2_is_cpu if config else true
-			var diff   = config.cpu_difficulty if config else 1
-			p.set_cpu_mode(is_cpu, diff)
+			print(p.name, " usa modifier del draft: ", p.bullet_modifier.modifier_name)
 	
 	# Congelar jugadores durante el countdown
 	for p in players:
@@ -155,7 +135,7 @@ func start_round():
 	for i in range(config.countdown_from, 0, -1):
 		emit_signal("countdown_tick", i)
 		await get_tree().create_timer(config.countdown_step_time).timeout
-	emit_signal("countdown_tick", 0)  # 0 = ¡FIGHT!
+	emit_signal("countdown_tick", 0)  # 0 = ┬íFIGHT!
 	
 	# Descongelar jugadores e iniciar ronda
 	for p in players:
@@ -168,6 +148,40 @@ func start_round():
 	current_time = config.round_time
 	round_active = true
 
+<<<<<<< Updated upstream
+=======
+func _apply_player1_state(p: Node):
+	## Aplica arma activa y habilidades acumuladas a Player1
+	if player_loadouts.has("Player1") and player_loadouts["Player1"].size() > 0:
+		p.weapon_loadout = player_loadouts["Player1"]
+	if not player_weapon_index.has("Player1"):
+		player_weapon_index["Player1"] = 0
+	p.active_weapon_index = player_weapon_index.get("Player1", 0)
+	p.active_abilities    = player_abilities.get("Player1", [])
+	p.refresh_effective_modifier()
+
+func _apply_bot_weapon(p: Node):
+	## Asigna arma aleatoria y aplica configuraci├│n de CPU/humano al Player2
+	var path = BOT_WEAPON_POOL[randi() % BOT_WEAPON_POOL.size()]
+	if ResourceLoader.exists(path):
+		var weapon = load(path)
+		if weapon is BulletModifier:
+			p.bullet_modifier = weapon
+			p.weapon_loadout  = [weapon]
+			p.active_weapon_index = 0
+			p.active_abilities    = []
+			p.refresh_effective_modifier()
+			print(p.name, " (bot) usa arma: ", weapon.modifier_name)
+	# Aplicar modo CPU seg├║n config
+	if p.has_method("set_cpu_mode"):
+		var is_cpu = config.p2_is_cpu if config else true
+		var diff   = config.cpu_difficulty if config else 1
+		p.set_cpu_mode(is_cpu, diff)
+
+# =========================================================
+# CHEQUEO DE JUGADORES VIVOS
+# =========================================================
+>>>>>>> Stashed changes
 func check_players_alive():
 	if players.size() == 0:
 		return
@@ -236,7 +250,7 @@ func end_round(reason):
 	
 	await get_tree().create_timer(config.round_end_delay).timeout
 	
-	# Verificar si el juego terminó antes del draft
+	# Verificar si el juego termin├│ antes del draft
 	for player_name in scores:
 		if scores[player_name] >= config.rounds_to_win:
 			end_game()
@@ -257,7 +271,7 @@ func end_round(reason):
 		next_round()
 
 func _on_draft_completed():
-	print("Draft completado — avanzando a siguiente ronda")
+	print("Draft completado ÔÇö avanzando a siguiente ronda")
 	_waiting_for_draft = false
 	next_round()
 
@@ -278,7 +292,7 @@ func next_round():
 	pending_restart = true
 
 func end_game():
-	print("===! VUELVE A JUGAR JODER ¡===")
+	print("===!VUELVE A JUGAR JODER┬í===")
 	print("Puntuaciones finales: ", scores)
 	var final_winner = ""
 	for player_name in scores:

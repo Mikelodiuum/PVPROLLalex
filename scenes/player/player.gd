@@ -1,39 +1,25 @@
 extends CharacterBody2D
 
-<<<<<<< Updated upstream
-## Script principal del jugador. Sirve para P1 y P2 configurando los inputs via inspector.
-## Soporta: movimiento, disparo con cooldown, vida, barra de vida, flash de daño,
-## freeze (countdown), escudo temporal, y disparos múltiples (shotgun).
-=======
 ## Script principal del jugador — soporta tanto control humano como IA (CPU).
 ## La IA se activa con set_cpu_mode(true, difficulty) desde GameManager.
 ## Soporta: loadout de armas, habilidades acumuladas, movimiento, disparo,
 ## vida, escudo, dash, freeze, lifesteal, regen, drain, veneno, y más.
->>>>>>> Stashed changes
 
 @export var bullet_scene: PackedScene
 @export var speed := 300.0
 
-# Inputs configurables (permite reusar el mismo script para ambos jugadores)
-@export var up_input := "ui_up"
-@export var down_input := "ui_down"
-@export var left_input := "ui_left"
+@export var up_input    := "ui_up"
+@export var down_input  := "ui_down"
+@export var left_input  := "ui_left"
 @export var right_input := "ui_right"
 @export var shoot_input := "ui_accept"
-@export var dash_input := "ui_shift"
+@export var dash_input  := "ui_shift"
 
-# Dash config
 @export_group("Dash")
-@export var dash_speed := 900.0
+@export var dash_speed    := 900.0
 @export var dash_duration := 0.15
 @export var dash_cooldown := 1.2
 
-<<<<<<< Updated upstream
-
-# Combate
-@export var bullet_modifier: BulletModifier = null
-@export var max_health := 100
-=======
 @export_group("Combate")
 @export var bullet_modifier: BulletModifier = null
 @export var max_health := 100
@@ -48,7 +34,7 @@ var _base_speed: float         = 300.0
 var _base_max_health: int      = 100
 var _base_dash_cooldown: float = 1.2
 
-# --- Stats calculados de habilidades (existentes)
+# --- Stats calculados de habilidades
 var _ab_damage_bonus: int         = 0
 var _ab_damage_mult: float        = 1.0
 var _ab_speed_bonus: float        = 0.0
@@ -56,7 +42,6 @@ var _ab_cooldown_reduction: float = 0.0
 var _ab_lifesteal: float          = 0.0
 var _ab_shield_per_round: int     = 0
 
-# --- Stats calculados de habilidades (nuevos)
 var _ab_bullet_speed_mult: float    = 1.0
 var _ab_bonus_pierce: int           = 0
 var _ab_bonus_bullet_count: int     = 0
@@ -75,26 +60,15 @@ var _ab_hp_drain: float             = 0.0
 var _effective_modifier: BulletModifier = null
 
 # === COMBATE ===
->>>>>>> Stashed changes
 var current_health: int
 var can_shoot: bool = true
+var shield: int     = 0
 
-<<<<<<< Updated upstream
-# Estado
-var frozen := false   # True durante countdown — bloquea movimiento, rotación y disparo
-var shield: int = 0   # Escudo temporal (absorbe daño antes de la vida)
-var is_dashing := false
-var dash_timer := 0.0
-var _dash_direction := Vector2.ZERO
-
-
-# Referencias a la barra de vida
-@onready var health_bar = $HealthBarPivot/HealthBar
-=======
 # === ESTADO ===
 var frozen          := false
 var is_dashing      := false
 var dash_timer      := 0.0
+var _dash_time_left := 0.0
 var _dash_direction := Vector2.ZERO
 
 var _regen_accumulator: float = 0.0
@@ -118,26 +92,18 @@ func set_cpu_mode(enable: bool, difficulty: int = 1):
 	print(name, " modo CPU: ", enable, "  dificultad: ", difficulty)
 
 @onready var health_bar       = $HealthBarPivot/HealthBar
->>>>>>> Stashed changes
 @onready var health_bar_pivot = $HealthBarPivot
 
 func _ready():
-	# El nombre se hereda del nodo en main.tscn (Player1, Player2...)
 	add_to_group("players")
-<<<<<<< Updated upstream
-=======
 	_base_speed         = speed
 	_base_max_health    = max_health
 	_base_dash_cooldown = dash_cooldown
->>>>>>> Stashed changes
 	current_health = max_health
-	# Inicializar barra de vida
 	if health_bar:
 		health_bar.max_value = max_health
-		health_bar.value = current_health
+		health_bar.value     = current_health
 
-<<<<<<< Updated upstream
-=======
 # =========================================================
 # LLAMADO POR GameManager AL INICIO DE CADA RONDA
 # =========================================================
@@ -251,80 +217,53 @@ func on_damage_dealt(amount: int):
 			health_bar.value = current_health
 
 # =========================================================
-# VENENO (llamado por bullet.gd — el jugador gestiona su propio timer)
+# VENENO (llamado por bullet.gd)
 # =========================================================
 func apply_poison(tick_damage: int, ticks: int):
 	for _i in range(ticks):
 		await get_tree().create_timer(1.0).timeout
 		if not is_inside_tree():
 			return
-		take_damage(tick_damage)
+		
+		# Aplica true damage ignorando el escudo para mayor peligrosidad
+		current_health -= tick_damage
+		print(name, " veneno tic: -", tick_damage, " (HP: ", current_health, ")")
+		if health_bar:
+			health_bar.value = current_health
+		
+		# Flash Visual VERDE INTENSO de envenenamiento
+		if has_node("Sprite2D"):
+			$Sprite2D.modulate = Color(0.2, 0.9, 0.2)
+			var tween = create_tween()
+			tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.25)
+		
+		if current_health <= 0:
+			die()
+			return
 
 # =========================================================
 # FÍSICA
 # =========================================================
->>>>>>> Stashed changes
 func _physics_process(delta):
-	# Si está congelado (countdown), no procesar input
+	# Si está congelado (countdown), no procesar input ni física
 	if not frozen:
+		
+		# Procesar Unified Dash Logic (resuelve bugs del lambda que crasheaba si el player moría)
 		if dash_timer > 0:
 			dash_timer -= delta
-
 		if is_dashing:
+			_dash_time_left -= delta
 			velocity = _dash_direction * dash_speed
 			move_and_slide()
-		else:
-<<<<<<< Updated upstream
-			# === MOVIMIENTO ===
-			var direction = Vector2.ZERO
-			if Input.is_action_pressed(right_input):
-				direction.x += 1
-			if Input.is_action_pressed(left_input):
-				direction.x -= 1
-			if Input.is_action_pressed(down_input):
-				direction.y += 1
-			if Input.is_action_pressed(up_input):
-				direction.y -= 1
-
-			direction = direction.normalized()
-			
-			# Detectar Dash
-			var wants_dash = false
-			if dash_input != "" and InputMap.has_action(dash_input):
-				wants_dash = Input.is_action_just_pressed(dash_input)
-			elif dash_input == "ui_shift":
-				wants_dash = Input.is_physical_key_pressed(KEY_SHIFT)
-
-			if wants_dash and dash_timer <= 0 and direction != Vector2.ZERO:
-				is_dashing = true
-				dash_timer = dash_cooldown
-				_dash_direction = direction
-				
-				# Tinte visual (ghost)
-				if has_node("Sprite2D"):
-					var tw = create_tween()
-					tw.tween_property($Sprite2D, "modulate:a", 0.3, 0.05)
-					tw.tween_property($Sprite2D, "modulate:a", 1.0, dash_duration)
-				
-				await get_tree().create_timer(dash_duration).timeout
+			if _dash_time_left <= 0:
 				is_dashing = false
-=======
+		else:
+			# Procesar lógica de CPU o humano solo si no está dasheando
 			if is_cpu:
 				_cpu_process(delta)
->>>>>>> Stashed changes
 			else:
 				_human_process(delta)
 
-<<<<<<< Updated upstream
-			# === APUNTADO ===
-			var mouse_position = get_global_mouse_position()
-			var direction_to_mouse = mouse_position - global_position
-			rotation = direction_to_mouse.angle()
-
-			# === DISPARO ===
-			if Input.is_action_just_pressed(shoot_input):
-				shoot()
-=======
 		# === REGENERACIÓN ===
 		if _ab_health_regen > 0:
 			_regen_accumulator += _ab_health_regen * delta
@@ -346,19 +285,15 @@ func _physics_process(delta):
 					health_bar.value = current_health
 				if current_health <= 0:
 					die()
->>>>>>> Stashed changes
-
 	
-	# La barra de vida siempre se mantiene horizontal (incluso congelado)
+	# La barra de vida siempre se mantiene horizontal
 	if health_bar_pivot:
 		health_bar_pivot.rotation = -rotation
 
-<<<<<<< Updated upstream
-=======
 # =========================================================
 # CONTROL HUMANO
 # =========================================================
-func _human_process(delta):
+func _human_process(_delta):
 	var direction = Vector2.ZERO
 	if Input.is_action_pressed(right_input): direction.x += 1
 	if Input.is_action_pressed(left_input):  direction.x -= 1
@@ -366,7 +301,7 @@ func _human_process(delta):
 	if Input.is_action_pressed(up_input):    direction.y -= 1
 	direction = direction.normalized()
 
-	# Dash
+	# Dash detect
 	var wants_dash = false
 	if dash_input != "" and InputMap.has_action(dash_input):
 		wants_dash = Input.is_action_just_pressed(dash_input)
@@ -374,22 +309,13 @@ func _human_process(delta):
 		wants_dash = Input.is_physical_key_pressed(KEY_SHIFT)
 
 	if wants_dash and dash_timer <= 0 and direction != Vector2.ZERO:
-		is_dashing      = true
-		dash_timer      = dash_cooldown
-		_dash_direction = direction
-		if has_node("Sprite2D"):
-			var tw = create_tween()
-			tw.tween_property($Sprite2D, "modulate:a", 0.3, 0.05)
-			tw.tween_property($Sprite2D, "modulate:a", 1.0, dash_duration)
-		await get_tree().create_timer(dash_duration).timeout
-		is_dashing = false
+		_perform_dash(direction)
 	else:
 		velocity = direction * speed
 		move_and_slide()
 
-	# Apuntado con ratón
-	var mouse_pos = get_global_mouse_position()
-	rotation = (mouse_pos - global_position).angle()
+	# Apuntado
+	rotation = (get_global_mouse_position() - global_position).angle()
 
 	# Disparo
 	if Input.is_action_just_pressed(shoot_input):
@@ -408,138 +334,111 @@ func _cpu_process(delta):
 	var dist       = to_target.length()
 	var shoot_range = _cpu_shoot_range()
 
-	# --- Temporizador de strafe (cambiar dirección periódicamente) ---
+	# Temporizador de strafe
 	_cpu_strafe_timer -= delta
 	if _cpu_strafe_timer <= 0.0:
 		_cpu_strafe_timer = randf_range(1.2, 2.8)
 		_cpu_strafe_dir   = 1.0 if randf() > 0.5 else -1.0
 
-	# --- Esquiva con dash si fue golpeado recientemente (Normal y Difícil) ---
+	# Esquiva con dash
 	if _cpu_hit_timer > 0:
 		_cpu_hit_timer -= delta
 		if cpu_difficulty >= 1 and dash_timer <= 0:
 			var dodge_dir = to_target.normalized().rotated(PI * 0.5 * _cpu_strafe_dir)
-			_cpu_initiate_dash(dodge_dir)
-		return   # mientras procesa la reacción, no hace otras cosas
+			_perform_dash(dodge_dir)
+		return
 
-	# --- Apuntado: hacia el jugador con inaccuracy según dificultad ---
+	# Apuntado con inaccuracy
 	var inaccuracy = _cpu_inaccuracy()
-	var aim_offset = Vector2(randf_range(-inaccuracy, inaccuracy),
-							 randf_range(-inaccuracy, inaccuracy))
+	var aim_offset = Vector2(randf_range(-inaccuracy, inaccuracy), randf_range(-inaccuracy, inaccuracy))
 	rotation = (_cpu_target.global_position + aim_offset - global_position).angle()
 
-	# --- Movimiento ---
+	# Movimiento / Persecucion
 	var move_dir: Vector2
 	if dist > shoot_range:
-		# Perseguir: acercarse al objetivo
 		move_dir = to_target.normalized()
 	else:
-		# En rango: strafe perpendicular para seguir moviéndose
 		move_dir = to_target.normalized().rotated(PI * 0.5 * _cpu_strafe_dir)
 
 	velocity = move_dir * speed
 	move_and_slide()
 
-	# --- Disparo: cuando está en rango y puede disparar ---
+	# Disparo recurrente
 	if dist <= shoot_range and can_shoot:
 		shoot()
 
-## Busca al primer jugador que no sea este nodo
 func _cpu_find_target() -> Node:
 	for node in get_tree().get_nodes_in_group("players"):
 		if node != self:
 			return node
 	return null
 
-## Inicia un dash en la dirección dada (igual que el humano pero sin input)
-func _cpu_initiate_dash(dir: Vector2):
-	if dash_timer > 0 or is_dashing or dir == Vector2.ZERO:
-		return
-	is_dashing      = true
-	dash_timer      = dash_cooldown
+func _cpu_shoot_range() -> float:
+	match cpu_difficulty:
+		0: return 220.0
+		1: return 380.0
+		2: return 560.0
+	return 380.0
+
+func _cpu_inaccuracy() -> float:
+	match cpu_difficulty:
+		0: return 90.0
+		1: return 35.0
+		2: return 8.0
+	return 35.0
+
+# =========================================================
+# ACCIÓN: DASH SHARED Logic
+# =========================================================
+func _perform_dash(dir: Vector2):
+	is_dashing = true
+	dash_timer = dash_cooldown
+	_dash_time_left = dash_duration
 	_dash_direction = dir.normalized()
+	
 	if has_node("Sprite2D"):
 		var tw = create_tween()
 		tw.tween_property($Sprite2D, "modulate:a", 0.3, 0.05)
 		tw.tween_property($Sprite2D, "modulate:a", 1.0, dash_duration)
-	get_tree().create_timer(dash_duration).timeout.connect(func(): is_dashing = false, CONNECT_ONE_SHOT)
-
-## Rango de disparo según dificultad
-func _cpu_shoot_range() -> float:
-	match cpu_difficulty:
-		0: return 220.0  # Fácil: solo dispara cuando está cerca
-		1: return 380.0  # Normal
-		2: return 560.0  # Difícil: dispara desde lejos
-	return 380.0
-
-## Imprecisión del apuntado (desplazamiento aleatorio en px) según dificultad
-func _cpu_inaccuracy() -> float:
-	match cpu_difficulty:
-		0: return 90.0   # Fácil: muy impreciso
-		1: return 35.0   # Normal
-		2: return 8.0    # Difícil: casi perfecto
-	return 35.0
 
 # =========================================================
 # DISPARO
 # =========================================================
->>>>>>> Stashed changes
 func shoot():
 	if not can_shoot:
 		return
 	if bullet_scene == null:
-		print("ERROR: bullet_scene no asignada")
+		print("ERROR: bullet_scene no asignada en ", name)
 		return
-<<<<<<< Updated upstream
-	
-	can_shoot = false
-	
-	# Soporte multi-bala (shotgun) y ángulo de dispersión
-	var count = bullet_modifier.bullet_count if bullet_modifier else 1
-	var spread = deg_to_rad(bullet_modifier.spread_angle if bullet_modifier else 0.0)
-	var base_dir = (get_global_mouse_position() - $Muzzle.global_position).normalized()
-	
-=======
 
 	var mod = _effective_modifier if _effective_modifier else bullet_modifier
 	if mod == null:
-		print("AVISO: ", name, " no tiene modifier. Disparo cancelado.")
 		return
 
 	can_shoot = false
-
 	var count    = mod.bullet_count
 	var spread   = deg_to_rad(mod.spread_angle)
-	var base_dir = ($Muzzle.global_position).direction_to(
-		get_global_mouse_position() if not is_cpu else _cpu_target.global_position if is_instance_valid(_cpu_target) else global_position + Vector2(cos(rotation), sin(rotation))
-	)
+	
+	var base_dir = Vector2.RIGHT.rotated(rotation)
 
->>>>>>> Stashed changes
 	for i in count:
 		var bullet = bullet_scene.instantiate()
 		bullet.global_position = $Muzzle.global_position
 		
-		# Calcular dirección con dispersión
+		# Dispersión manual de pellets multiples
 		if count > 1 and spread > 0:
 			var angle_offset = lerp(-spread / 2.0, spread / 2.0, float(i) / float(count - 1))
 			bullet.direction = base_dir.rotated(angle_offset)
 		else:
 			bullet.direction = base_dir
-		
-		bullet.shooter = self
-		if bullet_modifier:
-			bullet.modifier = bullet_modifier
+			
+		bullet.shooter  = self
+		bullet.modifier = mod
 		get_parent().add_child(bullet)
-	
-	# Cooldown del modificador (default 0.5s)
-	var cd = bullet_modifier.cooldown if bullet_modifier else 0.5
-	await get_tree().create_timer(cd).timeout
+
+	await get_tree().create_timer(mod.cooldown).timeout
 	can_shoot = true
 
-<<<<<<< Updated upstream
-func take_damage(amount: int):
-	# El escudo absorbe daño primero
-=======
 # =========================================================
 # DAÑO
 # =========================================================
@@ -548,27 +447,26 @@ func take_damage(amount: int):
 	if _ab_invincible_during_dash and is_dashing:
 		return
 
-	# CPU: activar esquiva al recibir daño (Normal y Difícil)
+	# CPU: activar esquiva
 	if is_cpu and cpu_difficulty >= 1:
 		_cpu_hit_timer = 0.4
 
->>>>>>> Stashed changes
 	if shield > 0:
 		var absorbed = min(shield, amount)
-		shield -= absorbed
-		amount -= absorbed
-		print(name, " escudo absorbe ", absorbed, " (restante: ", shield, ")")
+		shield  -= absorbed
+		amount  -= absorbed
+		print(name, " escudo absorbe ", absorbed)
 		if amount <= 0:
 			_flash_damage()
 			return
-	
+
 	current_health -= amount
-	print(name, " vida:", current_health)
-	# Actualizar barra de vida
+	print(name, " vida restante:", current_health)
+	
 	if health_bar:
 		health_bar.value = current_health
-	# Flash rojo de daño
 	_flash_damage()
+	
 	if current_health <= 0:
 		die()
 
@@ -579,5 +477,5 @@ func _flash_damage():
 		tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.15)
 
 func die():
-	print(name, " muerto")
+	print(name, " ha muerto")
 	queue_free()
