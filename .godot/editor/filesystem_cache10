@@ -1,13 +1,13 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1774895984
+::res://::1774897800
 player.gd::GDScript::4276854982615224667::1774894434::0::1::::<>CharacterBody2D<><>0<>0<><>::
 ::res://scenes/::1774894434
 ::res://scenes/bullet/::1774894434
 bullet.gd::GDScript::210250572367005493::1774894434::0::1::::<>CharacterBody2D<><>0<>0<><>::
 bullet.tscn::PackedScene::7885639123424666101::1774894434::0::1::::<><><>0<>0<><>::uid://o8frs8q13v30::::res://sprites/Proyectilbase.svg<>uid://c832cogutxfx::::res://scenes/bullet/bullet.gd
-::res://scenes/main/::1774895840
-game_manager.gd::GDScript::7652510537014496646::1774895840::0::1::::<>Node<><>0<>0<><>::
-main.tscn::PackedScene::1309073471332341272::1774894434::0::1::::<><><>0<>0<><>::uid://g2rlkox26jt0::::res://scenes/player/player.tscn
+::res://scenes/main/::1774897761
+game_manager.gd::GDScript::7652510537014496646::1774897761::0::1::::<>Node<><>0<>0<><>::
+main.tscn::PackedScene::1309073471332341272::1774897697::0::1::::<><><>0<>0<><>::uid://g2rlkox26jt0::::res://scenes/player/player.tscn
 ::res://scenes/player/::1774894434
 player2.gd::GDScript::3450849250908000985::1774894434::0::1::::<>CharacterBody2D<><>0<>0<><>::
 player.gd::GDScript::2582975745907662459::1774894434::0::1::::<>CharacterBody2D<><>0<>0<><>::
