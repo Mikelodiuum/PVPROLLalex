@@ -13,6 +13,20 @@ extends CharacterBody2D
 var current_health: int
 var can_shoot: bool = true
 
+# Referencias a la barra de vida
+@onready var health_bar = $HealthBarPivot/HealthBar
+@onready var health_bar_pivot = $HealthBarPivot
+
+func _ready():
+	# No hardcodeamos el nombre: se hereda del nombre del nodo en main.tscn
+	# ("Player1" o "Player2" según la instancia)
+	add_to_group("players")
+	current_health = max_health
+	# Inicializar barra de vida
+	if health_bar:
+		health_bar.max_value = max_health
+		health_bar.value = current_health
+
 func _physics_process(delta):
 	var direction = Vector2.ZERO
 
@@ -32,6 +46,10 @@ func _physics_process(delta):
 	var mouse_position = get_global_mouse_position()
 	var direction_to_mouse = mouse_position - global_position
 	rotation = direction_to_mouse.angle()
+
+	# Contrarrotar la barra de vida para que siempre esté horizontal
+	if health_bar_pivot:
+		health_bar_pivot.rotation = -rotation
 
 	if Input.is_action_just_pressed(shoot_input):
 		shoot()
@@ -58,20 +76,23 @@ func shoot():
 	await get_tree().create_timer(cd).timeout
 	can_shoot = true
 
-
-
 func take_damage(amount: int):
 	current_health -= amount
-	print(name, "vida:", current_health)
+	print(name, " vida:", current_health)
+	# Actualizar barra de vida
+	if health_bar:
+		health_bar.value = current_health
+	# Flash rojo de daño
+	_flash_damage()
 	if current_health <= 0:
 		die()
 
-func _ready():
-	name = "Player1"
-	add_to_group("players")
-	current_health = max_health
-
+func _flash_damage():
+	if has_node("Sprite2D"):
+		$Sprite2D.modulate = Color.RED
+		var tween = create_tween()
+		tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.15)
 
 func die():
-	print(name, "muerto")
+	print(name, " muerto")
 	queue_free()

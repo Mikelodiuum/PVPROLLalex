@@ -6,6 +6,10 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+*.csproj
+*.sln
+*.user
+*.userprefs
 
 # System/tool-specific ignores
 .DS_Store
