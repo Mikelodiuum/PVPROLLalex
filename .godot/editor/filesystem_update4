@@ -1,3 +1,2 @@
-res://scenes/main/manager/game_manager.gd
 res://scenes/main/main.tscn
-res://scenes/main/manager/game_config.gd
+res://scenes/combat/modifiers/bullet_disc.tres
