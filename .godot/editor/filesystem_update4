@@ -1,0 +1,5 @@
+res://player.gd
+res://scenes/combat/weapons/basic/bullet.gd
+res://scenes/combat/weapons/basic/bullet.tscn
+res://scenes/main/manager/game_manager.gd
+res://scenes/ui/ui.gd

@@ -1,7 +1,12 @@
 extends Node
 
+## GameManager (Autoload) — Controla el flujo del juego:
+## rondas, puntuaciones, countdown, spawn points y transiciones.
+
 signal round_ended(winner_name: String)
 signal game_ended(final_winner: String)
+signal countdown_tick(number: int)
+
 @export var round_time := 120.0
 var current_time := 0.0
 var players := []
@@ -30,6 +35,26 @@ func start_round():
 	
 	players = get_tree().get_nodes_in_group("players")
 	print("Players detectados: ", players.size())
+	
+	# Posicionar jugadores en los spawn points de la arena
+	var arena = get_tree().get_first_node_in_group("arena")
+	if arena:
+		for i in range(players.size()):
+			players[i].global_position = arena.get_player_spawn(i)
+	
+	# Congelar jugadores durante el countdown
+	for p in players:
+		p.frozen = true
+	
+	# === COUNTDOWN 3-2-1-GO! ===
+	for i in range(3, 0, -1):
+		emit_signal("countdown_tick", i)
+		await get_tree().create_timer(1.0).timeout
+	emit_signal("countdown_tick", 0)  # 0 = ¡FIGHT!
+	
+	# Descongelar jugadores e iniciar ronda
+	for p in players:
+		p.frozen = false
 	
 	for p in players:
 		if not scores.has(p.name):
