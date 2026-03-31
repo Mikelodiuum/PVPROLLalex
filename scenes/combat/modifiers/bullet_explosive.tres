@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BulletModifier" format=3 uid="uid://ltjjhd5p6ojx"]
+
+[ext_resource type="Script" uid="uid://bxebnfdqiqafs" path="res://scenes/combat/modifiers/bulletmodifier.gd" id="1_explosive"]
+
+[resource]
+script = ExtResource("1_explosive")
+modifier_name = "Explosive"
+description = "Enorme y lenta. Un solo impacto puede cambiar la ronda."
+icon_color = Color(1, 0.25, 0.15, 1)
+speed = 300.0
+damage = 70
+lifetime = 4.0
+color = Color(1, 0.3, 0.1, 1)
+scale = 2.0
+cooldown = 1.5
+metadata/_custom_type_script = "uid://bxebnfdqiqafs"

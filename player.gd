@@ -1,7 +1,8 @@
 extends CharacterBody2D
 
 ## Script principal del jugador. Sirve para P1 y P2 configurando los inputs via inspector.
-## Soporta: movimiento, disparo con cooldown, vida, barra de vida, flash de daño, freeze (countdown).
+## Soporta: movimiento, disparo con cooldown, vida, barra de vida, flash de daño,
+## freeze (countdown), escudo temporal, y disparos múltiples (shotgun).
 
 @export var bullet_scene: PackedScene
 @export var speed := 300.0
@@ -21,6 +22,7 @@ var can_shoot: bool = true
 
 # Estado
 var frozen := false   # True durante countdown — bloquea movimiento, rotación y disparo
+var shield: int = 0   # Escudo temporal (absorbe daño antes de la vida)
 
 # Referencias a la barra de vida
 @onready var health_bar = $HealthBarPivot/HealthBar
@@ -75,13 +77,26 @@ func shoot():
 	
 	can_shoot = false
 	
-	var bullet = bullet_scene.instantiate()
-	bullet.global_position = $Muzzle.global_position
-	bullet.direction = (get_global_mouse_position() - bullet.global_position).normalized()
-	bullet.shooter = self
-	if bullet_modifier:
-		bullet.modifier = bullet_modifier
-	get_parent().add_child(bullet)
+	# Soporte multi-bala (shotgun) y ángulo de dispersión
+	var count = bullet_modifier.bullet_count if bullet_modifier else 1
+	var spread = deg_to_rad(bullet_modifier.spread_angle if bullet_modifier else 0.0)
+	var base_dir = (get_global_mouse_position() - $Muzzle.global_position).normalized()
+	
+	for i in count:
+		var bullet = bullet_scene.instantiate()
+		bullet.global_position = $Muzzle.global_position
+		
+		# Calcular dirección con dispersión
+		if count > 1 and spread > 0:
+			var angle_offset = lerp(-spread / 2.0, spread / 2.0, float(i) / float(count - 1))
+			bullet.direction = base_dir.rotated(angle_offset)
+		else:
+			bullet.direction = base_dir
+		
+		bullet.shooter = self
+		if bullet_modifier:
+			bullet.modifier = bullet_modifier
+		get_parent().add_child(bullet)
 	
 	# Cooldown del modificador (default 0.5s)
 	var cd = bullet_modifier.cooldown if bullet_modifier else 0.5
@@ -89,6 +104,16 @@ func shoot():
 	can_shoot = true
 
 func take_damage(amount: int):
+	# El escudo absorbe daño primero
+	if shield > 0:
+		var absorbed = min(shield, amount)
+		shield -= absorbed
+		amount -= absorbed
+		print(name, " escudo absorbe ", absorbed, " (restante: ", shield, ")")
+		if amount <= 0:
+			_flash_damage()
+			return
+	
 	current_health -= amount
 	print(name, " vida:", current_health)
 	# Actualizar barra de vida

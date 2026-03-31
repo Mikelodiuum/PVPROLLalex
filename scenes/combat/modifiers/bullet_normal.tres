@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_ukhnu")
+modifier_name = "Normal"
+description = "Bala estándar equilibrada. Sin sorpresas, sin debilidades."
+icon_color = Color(0.8, 0.8, 0.8, 1)
 metadata/_custom_type_script = "uid://bxebnfdqiqafs"
