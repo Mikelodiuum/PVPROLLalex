@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AbilityResource" format=3]
+
+[ext_resource type="Script" path="res://scenes/combat/abilities/ability_resource.gd" id="1_ability"]
+
+[resource]
+script = ExtResource("1_ability")
+ability_name = "Bala Envenenada"
+description = "Cada impacto aplica veneno: 5 de daño por segundo durante 3 segundos."
+icon_color = Color(0.3, 0.8, 0.2, 1)
+damage_on_tick = 5
+tick_duration = 3.0

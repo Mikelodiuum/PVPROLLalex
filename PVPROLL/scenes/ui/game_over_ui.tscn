@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://dm6f7gyq4ujoc"]
+
+[ext_resource type="Script" path="res://scenes/ui/game_over_ui.gd" id="1_go"]
+
+[sub_resource type="StyleBoxFlat" id="bg_style"]
+bg_color = Color(0, 0, 0, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+bg_color = Color(0.12, 0.08, 0.08, 0.95)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_left = 16
+corner_radius_bottom_right = 16
+border_width_left = 3
+border_width_right = 3
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="btn_rematch"]
+bg_color = Color(0.15, 0.45, 0.3, 0.9)
+corner_radius_all = 8
+
+[sub_resource type="StyleBoxFlat" id="btn_rematch_hover"]
+bg_color = Color(0.2, 0.6, 0.4, 0.95)
+corner_radius_all = 8
+
+[sub_resource type="StyleBoxFlat" id="btn_menu"]
+bg_color = Color(0.4, 0.3, 0.15, 0.9)
+corner_radius_all = 8
+
+[sub_resource type="StyleBoxFlat" id="btn_menu_hover"]
+bg_color = Color(0.55, 0.4, 0.2, 0.95)
+corner_radius_all = 8
+
+[node name="GameOverUI" type="CanvasLayer"]
+layer = 160
+process_mode = 3
+script = ExtResource("1_go")
+
+[node name="Background" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("bg_style")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -180.0
+offset_right = 250.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("panel_style")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_font_sizes/font_size = 42
+text = "GAME OVER"
+horizontal_alignment = 1
+
+[node name="WinnerLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 28
+text = "¡Player 1 ES EL CAMPEÓN!"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 10)
+
+[node name="RematchButton" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 50)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Revancha"
+theme_override_styles/normal = SubResource("btn_rematch")
+theme_override_styles/hover = SubResource("btn_rematch_hover")
+
+[node name="MenuButton" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 45)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "Menú Principal"
+theme_override_styles/normal = SubResource("btn_menu")
+theme_override_styles/hover = SubResource("btn_menu_hover")

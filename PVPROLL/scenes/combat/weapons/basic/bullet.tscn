@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dkl4la3twadub"]
+
+[ext_resource type="Texture2D" uid="uid://o8frs8q13v30" path="res://scenes/assets/sprites/Proyectilbase.svg" id="1_7c8un"]
+[ext_resource type="Script" uid="uid://c832cogutxfx" path="res://scenes/combat/weapons/basic/bullet.gd" id="1_83itf"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_83itf"]
+radius = 2.9995432
+height = 17.99726
+
+[node name="Bullet" type="Area2D" unique_id=685839355]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_83itf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2138399674]
+position = Vector2(-1, 0)
+rotation = 1.553343
+shape = SubResource("CapsuleShape2D_83itf")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1739076385]
+position = Vector2(-1, 0)
+scale = Vector2(0.11762812, 0.09967959)
+texture = ExtResource("1_7c8un")

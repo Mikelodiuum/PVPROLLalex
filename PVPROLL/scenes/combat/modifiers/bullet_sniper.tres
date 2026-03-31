@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BulletModifier" format=3]
+
+[ext_resource type="Script" uid="uid://bxebnfdqiqafs" path="res://scenes/combat/modifiers/bulletmodifier.gd" id="1_sniper"]
+
+[resource]
+script = ExtResource("1_sniper")
+modifier_name = "Sniper"
+description = "Ultra rápida y potente. Atraviesa enemigos pero tarda en recargar."
+icon_color = Color(0.3, 0.75, 1.0, 1)
+speed = 1500.0
+damage = 45
+pierce = 2
+lifetime = 2.0
+color = Color(0.3, 0.8, 1.0, 1)
+scale = 0.7
+cooldown = 1.2
+metadata/_custom_type_script = "uid://bxebnfdqiqafs"
