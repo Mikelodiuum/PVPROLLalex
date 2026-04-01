@@ -51,6 +51,7 @@ var _dash_direction := Vector2.ZERO
 
 @onready var health_bar       = $HealthBarPivot/HealthBar
 @onready var health_bar_pivot = $HealthBarPivot
+@onready var camera           = $Camera2D
 
 func _ready():
 	add_to_group("players")
@@ -59,6 +60,16 @@ func _ready():
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value     = current_health
+
+	if name == "Player1" and camera:
+		camera.enabled = true
+		var arena = get_tree().get_first_node_in_group("arena")
+		if arena:
+			camera.limit_left   = 0
+			camera.limit_top    = 0
+			camera.limit_right  = int(arena.arena_size.x)
+			camera.limit_bottom = int(arena.arena_size.y)
+
 
 # === LLAMADO POR GameManager AL INICIO DE CADA RONDA ===
 func refresh_effective_modifier():

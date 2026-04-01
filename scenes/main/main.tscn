@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://g2rlkox26jt0" path="res://scenes/player/player.tscn" id="1_hyk8p"]
 [ext_resource type="PackedScene" uid="uid://dfijv6r12dm46" path="res://scenes/ui/Ui.tscn" id="2_iuonh"]
 [ext_resource type="Resource" uid="uid://dpsv52kce1m8r" path="res://scenes/combat/modifiers/bullet_normal.tres" id="3_l3cfh"]
-[ext_resource type="PackedScene" uid="uid://d08hbunc0gdo1" path="res://scenes/maps/arena_simple.tscn" id="5_arena"]
+[ext_resource type="PackedScene" path="res://scenes/maps/map_01/map_01.tscn" id="5_arena"]
 
 [node name="Main" type="Node2D" unique_id=1029885388]
 
