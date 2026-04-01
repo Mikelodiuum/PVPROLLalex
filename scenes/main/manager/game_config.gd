@@ -21,6 +21,8 @@ enum BotDifficulty { FACIL = 0, NORMAL = 1, DIFICIL = 2 }
 @export var default_health := 100               ## Vida por defecto de los jugadores
 @export var default_speed := 300.0              ## Velocidad por defecto de movimiento
 @export var default_modifier: BulletModifier    ## Modifier por defecto (si no se asigna uno)
+@export var p1_sprite: Texture2D = null         ## Sprite de P1 (deja en blanco para usar el del .tscn)
+@export var p2_sprite: Texture2D = null         ## Sprite de P2 (deja en blanco para usar el del .tscn)
 
 @export_group("Armas y Loadout")
 @export var weapons_per_loadout := 3            ## Cuántas armas puede llevar cada jugador

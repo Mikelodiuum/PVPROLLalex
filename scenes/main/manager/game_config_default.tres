@@ -2,7 +2,13 @@
 
 [ext_resource type="Script" uid="uid://doqol7b6am8ob" path="res://scenes/main/manager/game_config.gd" id="1_config"]
 [ext_resource type="Resource" uid="uid://dpsv52kce1m8r" path="res://scenes/combat/modifiers/bullet_normal.tres" id="1_ki1fn"]
+[ext_resource type="Texture2D" uid="uid://b1b44hhmgq4ci" path="res://scenes/assets/sprites/Player1sprite.png" id="2_hg7xx"]
+[ext_resource type="Texture2D" uid="uid://bvi8ds54xwp2s" path="res://scenes/assets/sprites/SpriteP2.png" id="3_hg7xx"]
 
 [resource]
 script = ExtResource("1_config")
-default_modifier = ExtResource("1_ki1fn")
+default_health = 200
+default_Bullet_Type = ExtResource("1_ki1fn")
+p1_sprite = ExtResource("2_hg7xx")
+p2_sprite = ExtResource("3_hg7xx")
+bot_p2_enabled = false

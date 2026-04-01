@@ -12,6 +12,10 @@ func _ready():
 	pickup_name = "Speed Boost"
 	pickup_color = Color(0.1, 0.85, 1.0)
 	pickup_icon_color = Color(0.6, 0.95, 1.0)
+	# Asignar imagen automáticamente. Para cambiar el sprite: sustituye SpeedBPickup.png en assets/sprites
+	var tex = load("res://scenes/assets/sprites/SpeedBPickup.png")
+	if tex:
+		pickup_texture = tex
 	super._ready()
 
 func apply_effect(player):

@@ -12,6 +12,10 @@ func _ready():
 	pickup_name = "Heal"
 	pickup_color = Color(0.15, 0.9, 0.3)
 	pickup_icon_color = Color(0.5, 1.0, 0.6)
+	# Asignar imagen automáticamente. Para cambiar el sprite: sustituye HealPickup.png en assets/sprites
+	var tex = load("res://scenes/assets/sprites/HealPickup.png")
+	if tex:
+		pickup_texture = tex
 	super._ready()
 
 func apply_effect(player):

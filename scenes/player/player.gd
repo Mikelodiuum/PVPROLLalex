@@ -7,6 +7,9 @@ extends CharacterBody2D
 @export var bullet_scene: PackedScene
 @export var speed := 300.0
 
+@export_group("Visual")
+@export var custom_sprite: Texture2D = null   ## Sprite del jugador (se aplica en _ready). Asignable desde Inspector o GameConfig.
+
 @export_group("Cámara")
 @export var is_camera_player := false  ## true → esta instancia activa la Camera2D (solo P1)
 
@@ -88,6 +91,9 @@ func _ready():
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value     = current_health
+	# Aplicar sprite personalizado si se ha asignado uno
+	if custom_sprite and has_node("Sprite2D"):
+		$Sprite2D.texture = custom_sprite
 	# Activar cámara solo si este jugador es el principal (P1)
 	if _camera:
 		_camera.enabled = is_camera_player

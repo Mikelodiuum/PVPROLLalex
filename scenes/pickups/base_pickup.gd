@@ -15,6 +15,7 @@ signal picked_up(pickup_type: String, player: Node)
 @export var pickup_name := "Pickup"
 @export var pickup_color := Color.WHITE
 @export var pickup_icon_color := Color(1, 1, 1, 0.9)
+@export var pickup_texture: Texture2D = null   ## Imagen personalizada para este pickup (opcional). Sustituye al díbujo por código.
 
 @export_group("Animación")
 @export var float_amplitude := 4.0        ## Pixeles de oscilación arriba/abajo
@@ -43,6 +44,19 @@ func _ready():
 	var col = CollisionShape2D.new()
 	col.shape = shape
 	add_child(col)
+	
+	# === SPRITE PERSONALIZADO ===
+	if pickup_texture != null:
+		var spr = Sprite2D.new()
+		spr.texture = pickup_texture
+		# Escalar para que quepa en el radio del pickup (~28px de diámetro)
+		var tex_size = pickup_texture.get_size()
+		var max_side = max(tex_size.x, tex_size.y)
+		if max_side > 0:
+			var desired := 28.0
+			spr.scale = Vector2.ONE * (desired / max_side)
+		spr.z_index = 1
+		add_child(spr)
 	
 	# Guardar posición base para la flotación
 	_base_y = position.y
@@ -91,6 +105,14 @@ func apply_effect(_player):
 
 # === PLACEHOLDER VISUAL ===
 func _draw():
+	# Si hay textura personalizada, solo dibujar el glow sutil (sin círculo sólido)
+	if pickup_texture != null:
+		var glow_color = pickup_color
+		glow_color.a = 0.10 + sin(_float_time * 1.5) * 0.04
+		draw_circle(Vector2.ZERO, 18.0, glow_color)
+		return
+	
+	# Comportamiento original (sin textura)
 	# Círculo exterior (glow pulsante)
 	var glow_color = pickup_color
 	glow_color.a = 0.15 + sin(_float_time * 1.5) * 0.05

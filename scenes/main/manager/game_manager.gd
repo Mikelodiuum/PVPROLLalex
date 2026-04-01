@@ -201,6 +201,11 @@ func _apply_player1_state(p: Node) -> void:
 		player_weapon_index["Player1"] = 0
 	p.active_weapon_index = player_weapon_index.get("Player1", 0)
 	p.active_abilities    = player_abilities.get("Player1", [])
+	# Sprite de P1 desde GameConfig
+	if config and config.p1_sprite and p.has_method("_ready"):
+		p.custom_sprite = config.p1_sprite
+		if p.has_node("Sprite2D"):
+			p.get_node("Sprite2D").texture = config.p1_sprite
 	p.refresh_effective_modifier()
 
 func _apply_bot_state(p: Node) -> void:
@@ -213,7 +218,14 @@ func _apply_bot_state(p: Node) -> void:
 			p.active_weapon_index = 0
 			p.active_abilities    = player_abilities.get(p.name, [])
 			p.refresh_effective_modifier()
+		# Sprite de P2 desde GameConfig (bot desactivado)
+		if config and config.p2_sprite and p.has_node("Sprite2D"):
+			p.get_node("Sprite2D").texture = config.p2_sprite
 		return
+
+	# Sprite de P2 desde GameConfig (bot activo)
+	if config and config.p2_sprite and p.has_node("Sprite2D"):
+		p.get_node("Sprite2D").texture = config.p2_sprite
 
 	# Determinar arma según dificultad
 	var difficulty: int  = clamp(int(config.bot_p2_difficulty), 0, BOT_DIFFICULTY_POOL_SIZE.size() - 1)

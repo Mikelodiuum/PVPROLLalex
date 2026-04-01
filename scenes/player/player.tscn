@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b160gajkm5yvb" path="res://scenes/player/player.gd" id="1_fsqob"]
 [ext_resource type="PackedScene" uid="uid://dkl4la3twadub" path="res://scenes/combat/weapons/basic/bullet.tscn" id="2_gmlin"]
-[ext_resource type="Texture2D" uid="uid://d1qtdjs4rfkna" path="res://scenes/assets/sprites/icon.svg" id="3_gmlin"]
+[ext_resource type="Texture2D" uid="uid://b1b44hhmgq4ci" path="res://scenes/assets/sprites/Player1sprite.png" id="3_lvxji"]
 [ext_resource type="Script" uid="uid://cont4mhvphk6x" path="res://scenes/player/health_bar.gd" id="4_hbar"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gmlin"]
@@ -14,14 +14,18 @@ script = ExtResource("1_fsqob")
 bullet_scene = ExtResource("2_gmlin")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=210840609]
+scale = Vector2(0.5, 0.5)
 shape = SubResource("CircleShape2D_gmlin")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=514035777]
 z_index = 1
-texture = ExtResource("3_gmlin")
+position = Vector2(1, 0)
+rotation = 1.5749007
+scale = Vector2(0.151, 0.148)
+texture = ExtResource("3_lvxji")
 
 [node name="Muzzle" type="Marker2D" parent="." unique_id=1221720251]
-position = Vector2(67, 0)
+position = Vector2(42, -7)
 
 [node name="HealthBarPivot" type="Node2D" parent="." unique_id=936165576]
 z_index = 10
@@ -39,6 +43,3 @@ script = ExtResource("4_hbar")
 enabled = false
 position_smoothing_enabled = true
 position_smoothing_speed = 6.0
-drag_horizontal_enabled = false
-drag_vertical_enabled = false
-zoom = Vector2(1, 1)

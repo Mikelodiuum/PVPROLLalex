@@ -12,6 +12,10 @@ func _ready():
 	pickup_name = "Shield"
 	pickup_color = Color(0.6, 0.25, 0.95)
 	pickup_icon_color = Color(0.75, 0.5, 1.0)
+	# Asignar imagen automáticamente. Para cambiar el sprite: sustituye ShieldPickup.png en assets/sprites
+	var tex = load("res://scenes/assets/sprites/ShieldPickup.png")
+	if tex:
+		pickup_texture = tex
 	super._ready()
 
 func apply_effect(player):
