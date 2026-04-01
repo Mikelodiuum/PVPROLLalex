@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cmapgrande01"]
+
+[ext_resource type="Script" path="res://scenes/maps/map_base.gd" id="1_mapbase"]
+
+[node name="MapGrande" type="Node2D" unique_id=100000001]
+script = ExtResource("1_mapbase")
+map_size = Vector2(3456, 1944)
+wall_thickness = 32.0
+auto_perimeter = true
+
+[node name="SpawnP1" type="Marker2D" parent="." unique_id=100000010]
+position = Vector2(250, 972)
+
+[node name="SpawnP2" type="Marker2D" parent="." unique_id=100000011]
+position = Vector2(3206, 972)
+
+[node name="PickupSpawn1" type="Marker2D" parent="." unique_id=100000020]
+position = Vector2(864, 486)
+
+[node name="PickupSpawn2" type="Marker2D" parent="." unique_id=100000021]
+position = Vector2(2592, 486)
+
+[node name="PickupSpawn3" type="Marker2D" parent="." unique_id=100000022]
+position = Vector2(864, 1458)
+
+[node name="PickupSpawn4" type="Marker2D" parent="." unique_id=100000023]
+position = Vector2(2592, 1458)
+
+[node name="PickupSpawn5" type="Marker2D" parent="." unique_id=100000024]
+position = Vector2(1728, 486)
+
+[node name="PickupSpawn6" type="Marker2D" parent="." unique_id=100000025]
+position = Vector2(1728, 1458)
+
+[node name="PickupSpawn7" type="Marker2D" parent="." unique_id=100000026]
+position = Vector2(1728, 972)

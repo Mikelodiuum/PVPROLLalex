@@ -118,6 +118,13 @@ func start_round():
 		for i in range(players.size()):
 			players[i].global_position = arena.get_player_spawn(i)
 
+		# Configurar límites de cámara de P1 según el tamaño del mapa
+		if arena.has_method("get_map_bounds"):
+			var bounds = arena.get_map_bounds()
+			for p in players:
+				if p.has_method("setup_camera_limits"):
+					p.setup_camera_limits(bounds)
+
 		if config.pickups_enabled:
 			var pickup_spawns = arena.get_all_pickup_spawns()
 			if pickup_spawns.size() > 0:

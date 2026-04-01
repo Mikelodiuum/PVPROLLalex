@@ -7,6 +7,10 @@ extends CharacterBody2D
 @export var bullet_scene: PackedScene
 @export var speed := 300.0
 
+@export_group("Cámara")
+@export var is_camera_player := false  ## true → esta instancia activa la Camera2D (solo P1)
+
+@export_group("Controles")
 @export var up_input    := "ui_up"
 @export var down_input  := "ui_down"
 @export var left_input  := "ui_left"
@@ -51,6 +55,7 @@ var _dash_direction := Vector2.ZERO
 
 @onready var health_bar       = $HealthBarPivot/HealthBar
 @onready var health_bar_pivot = $HealthBarPivot
+@onready var _camera: Camera2D = $Camera2D if has_node("Camera2D") else null
 
 func _ready():
 	add_to_group("players")
@@ -59,6 +64,18 @@ func _ready():
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value     = current_health
+	# Activar cámara solo si este jugador es el principal (P1)
+	if _camera:
+		_camera.enabled = is_camera_player
+
+## Configura los límites de la cámara según los bordes del mapa.
+## Llamado por GameManager tras el spawn, para que la cámara no salga del mapa.
+func setup_camera_limits(bounds: Rect2) -> void:
+	if _camera and _camera.enabled:
+		_camera.limit_left   = int(bounds.position.x)
+		_camera.limit_top    = int(bounds.position.y)
+		_camera.limit_right  = int(bounds.position.x + bounds.size.x)
+		_camera.limit_bottom = int(bounds.position.y + bounds.size.y)
 
 # === LLAMADO POR GameManager AL INICIO DE CADA RONDA ===
 func refresh_effective_modifier():

@@ -34,3 +34,11 @@ offset_bottom = 7.0
 value = 100.0
 show_percentage = false
 script = ExtResource("4_hbar")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=710032891]
+enabled = false
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+drag_horizontal_enabled = false
+drag_vertical_enabled = false
+zoom = Vector2(1, 1)
