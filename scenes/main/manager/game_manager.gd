@@ -204,10 +204,9 @@ func _apply_player1_state(p: Node) -> void:
 	p.refresh_effective_modifier()
 
 func _apply_bot_state(p: Node) -> void:
-	## Aplica arma aleatoria al bot según la dificultad configurada.
-	## Si el bot está desactivado, aplica el arma por defecto.
+	## Aplica arma aleatoria al bot y, si el bot está activo, inyecta BotController.
 	if not (config and config.bot_p2_enabled):
-		# Bot desactivado: aplicar arma por defecto
+		# Bot desactivado: P2 usa controles físicos normales
 		if config and config.default_modifier:
 			p.bullet_modifier     = config.default_modifier
 			p.weapon_loadout      = [config.default_modifier]
@@ -216,7 +215,7 @@ func _apply_bot_state(p: Node) -> void:
 			p.refresh_effective_modifier()
 		return
 
-	# Determinar tamaño del pool según dificultad
+	# Determinar arma según dificultad
 	var difficulty: int  = clamp(int(config.bot_p2_difficulty), 0, BOT_DIFFICULTY_POOL_SIZE.size() - 1)
 	var pool_count: int  = clamp(BOT_DIFFICULTY_POOL_SIZE[difficulty], 1, BOT_WEAPON_POOL.size())
 	var path: String     = BOT_WEAPON_POOL[randi() % pool_count]
@@ -232,6 +231,16 @@ func _apply_bot_state(p: Node) -> void:
 			print(p.name, " (bot dif=%d) usa: " % difficulty, weapon.modifier_name)
 	else:
 		push_warning("GameManager: Arma del bot no encontrada: " + path)
+
+	# Inyectar cerebro IA — solo si no hay ya un BotController en este nodo
+	if not p.has_node("BotController"):
+		p.is_bot       = true
+		var bot        = BotController.new()
+		bot.name       = "BotController"
+		bot.player     = p
+		bot.config     = config
+		p.add_child(bot)
+		print("BotController inyectado en ", p.name)
 
 # =========================================================
 # CHEQUEO DE JUGADORES VIVOS

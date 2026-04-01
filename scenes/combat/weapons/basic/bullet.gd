@@ -24,6 +24,7 @@ var execute_threshold: int    = 0       ## HP máximo para activar ejecución
 var _wall_pierced: bool       = false   ## Para reducir daño solo la primera vez que pasa la pared
 
 func _ready():
+	add_to_group("bullets")   # Para que BotController detecte proyectiles entrantes
 	if modifier:
 		damage           = modifier.damage
 		pierce           = modifier.pierce

@@ -70,6 +70,11 @@ var is_dashing    := false
 var dash_timer    := 0.0
 var _dash_direction := Vector2.ZERO
 
+## Cuando true, este jugador es controlado por BotController (no lee Input).
+## Al desactivar bot_p2_enabled en GameConfig, esta variable queda en false
+## y Player2 responde a controles físicos normales.
+var is_bot := false
+
 @onready var health_bar       = $HealthBarPivot/HealthBar
 @onready var health_bar_pivot = $HealthBarPivot
 @onready var _camera: Camera2D = $Camera2D if has_node("Camera2D") else null
@@ -218,7 +223,7 @@ func _physics_process(delta):
 		if is_dashing:
 			velocity = _dash_direction * dash_speed
 			move_and_slide()
-		else:
+		elif not is_bot:
 			var direction = Vector2.ZERO
 			if Input.is_action_pressed(right_input): direction.x += 1
 			if Input.is_action_pressed(left_input):  direction.x -= 1
@@ -259,7 +264,9 @@ func _physics_process(delta):
 		health_bar_pivot.rotation = -rotation
 
 # === DISPARO ===
-func shoot():
+## aim_direction: si != Vector2.ZERO se usa como dirección base (para el bot).
+## Si es Vector2.ZERO, se apunta al ratón (comportamiento normal del jugador).
+func shoot(aim_direction: Vector2 = Vector2.ZERO) -> void:
 	if not can_shoot: return
 	if bullet_scene == null:
 		print("ERROR: bullet_scene no asignada en ", name)
@@ -290,7 +297,11 @@ func shoot():
 
 	var count    = active_mod.bullet_count
 	var spread   = deg_to_rad(active_mod.spread_angle)
-	var base_dir = ($Muzzle.global_position).direction_to(get_global_mouse_position())
+	var base_dir: Vector2
+	if aim_direction != Vector2.ZERO:
+		base_dir = aim_direction.normalized()
+	else:
+		base_dir = ($Muzzle.global_position).direction_to(get_global_mouse_position())
 
 	for i in count:
 		var bullet = bullet_scene.instantiate()
@@ -344,3 +355,18 @@ func _flash_damage():
 func die():
 	print(name, " muerto")
 	queue_free()
+
+# === DASH EXTERNO (para BotController) ===
+## Permite que un controlador externo (bot) active el dash en una dirección.
+func request_dash(dir: Vector2) -> void:
+	if is_dashing or dash_timer > 0 or dir == Vector2.ZERO:
+		return
+	is_dashing      = true
+	dash_timer      = dash_cooldown
+	_dash_direction = dir.normalized()
+	if has_node("Sprite2D"):
+		var tw = create_tween()
+		tw.tween_property($Sprite2D, "modulate:a", 0.3, 0.05)
+		tw.tween_property($Sprite2D, "modulate:a", 1.0, dash_duration)
+	await get_tree().create_timer(dash_duration).timeout
+	is_dashing = false
