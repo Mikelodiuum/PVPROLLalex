@@ -6,3 +6,4 @@
 [resource]
 script = ExtResource("1_config")
 default_modifier = ExtResource("1_ki1fn")
+bot_p2_enabled = false

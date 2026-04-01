@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="AbilityResource" format=3 uid="uid://ry0oqo1o5ten"]
-
-[ext_resource type="Script" uid="uid://dfyguaupmrgng" path="res://scenes/combat/abilities/ability_resource.gd" id="1_1bv6b"]
-
-[resource]
-script = ExtResource("1_1bv6b")
-metadata/_custom_type_script = "uid://dfyguaupmrgng"

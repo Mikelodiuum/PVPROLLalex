@@ -2,8 +2,11 @@ extends Resource
 class_name GameConfig
 
 ## Resource que centraliza TODA la configuración del juego.
-## Crear un archivo .tres en el Inspector para personalizar sin programar.
-## Se carga en GameManager como @export.
+## Editar game_config_default.tres en el Inspector — sin tocar código.
+## Para añadir nuevas opciones: añadir @export aquí y el sistema las usará automáticamente.
+
+## Dificultad del bot: controla cuantas armas del pool puede usar.
+enum BotDifficulty { FACIL = 0, NORMAL = 1, DIFICIL = 2 }
 
 @export_group("Rondas")
 @export var max_rounds := 5                     ## Número máximo de rondas
@@ -37,3 +40,8 @@ class_name GameConfig
 @export_group("Tiempos de Transición")
 @export var round_end_delay := 2.0              ## Delay entre fin de ronda y selector/draft (s)
 @export var fight_message_duration := 0.8       ## Duración del mensaje "FIGHT!" (s)
+
+@export_group("Bot (P2)")
+@export var bot_p2_enabled    := true             ## Si Player2 es controlado por la IA
+## FACIL=2 armas basicas | NORMAL=3 armas | DIFICIL=pool completo
+@export var bot_p2_difficulty: BotDifficulty = BotDifficulty.NORMAL

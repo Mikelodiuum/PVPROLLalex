@@ -194,3 +194,7 @@ func _draw():
 	for rect in _obstacle_rects:
 		draw_rect(rect, obstacle_color)
 		draw_rect(rect, wall_border_color, false, 2.0)
+
+## Devuelve los límites del mapa (compatibilidad con MapBase / GameManager)
+func get_map_bounds() -> Rect2:
+	return Rect2(global_position, arena_size)

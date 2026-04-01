@@ -2,82 +2,63 @@
 
 [ext_resource type="Script" path="res://scenes/ui/weapon_select_ui.gd" id="1_wsel"]
 
-[sub_resource type="StyleBoxFlat" id="bg_style"]
-bg_color = Color(0.03, 0.03, 0.06, 0.88)
-
-[sub_resource type="StyleBoxFlat" id="inner_style"]
-bg_color = Color(0.06, 0.06, 0.10, 0.92)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_left = 16
-corner_radius_bottom_right = 16
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+bg_color = Color(0.06, 0.06, 0.10, 0.97)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_left = 12
+corner_radius_bottom_right = 12
 border_width_left = 1
 border_width_right = 1
 border_width_top = 1
 border_width_bottom = 1
-border_color = Color(0.3, 0.3, 0.45, 0.5)
+border_color = Color(0.55, 0.45, 0.1, 0.7)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 6
 
 [node name="WeaponSelectUI" type="CanvasLayer"]
-layer = 100
+layer = 101
 script = ExtResource("1_wsel")
 
-[node name="Background" type="Panel" parent="."]
-anchors_preset = 15
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_left = 1.0
+anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("bg_style")
+anchor_bottom = 0.0
+offset_left = -316.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 228.0
+grow_horizontal = 0
+grow_vertical = 1
+theme_override_styles/panel = SubResource("panel_style")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_right = 60
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_bottom = 40
-
-[node name="InnerPanel" type="Panel" parent="MarginContainer"]
+[node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("inner_style")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 6
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.8, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_constants/outline_size = 3
-text = "¡Elige tu arma!"
+theme_override_font_sizes/font_size = 13
+theme_override_constants/outline_size = 1
+text = "⚔ CAMBIAR ARMA"
 horizontal_alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
-theme_override_font_sizes/font_size = 16
-text = "Selecciona una de tus armas equipadas"
-horizontal_alignment = 1
-
-[node name="Spacer1" type="Control" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 8)
-
-[node name="CardsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="CardsContainer" type="HBoxContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 20
+theme_override_constants/separation = 6
 alignment = 1
 
-[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer"]
+[node name="ConfirmCenter" type="CenterContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 4)
-
-[node name="ConfirmCenter" type="CenterContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(0, 34)

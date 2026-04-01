@@ -29,10 +29,27 @@ func load_ability_pool():
 
 	var paths := [
 		"res://scenes/combat/abilities/ab_lifesteal.tres",
+		"res://scenes/combat/abilities/ab_lifesteal_big.tres",
 		"res://scenes/combat/abilities/ab_damage_boost.tres",
+		"res://scenes/combat/abilities/ab_power_mult.tres",
 		"res://scenes/combat/abilities/ab_speed_boost.tres",
+		"res://scenes/combat/abilities/ab_max_speed.tres",
 		"res://scenes/combat/abilities/ab_shield.tres",
+		"res://scenes/combat/abilities/ab_barrier_big.tres",
 		"res://scenes/combat/abilities/ab_cooldown.tres",
+		"res://scenes/combat/abilities/ab_heavy_bullet.tres",
+		"res://scenes/combat/abilities/ab_burst.tres",
+		"res://scenes/combat/abilities/ab_fast_bullet.tres",
+		"res://scenes/combat/abilities/ab_pierce.tres",
+		"res://scenes/combat/abilities/ab_dash_boost.tres",
+		"res://scenes/combat/abilities/ab_execute.tres",
+		"res://scenes/combat/abilities/ab_lucky_shot.tres",
+		"res://scenes/combat/abilities/ab_ghost.tres",
+		"res://scenes/combat/abilities/ab_intangibility.tres",
+		"res://scenes/combat/abilities/ab_berserker.tres",
+		"res://scenes/combat/abilities/ab_vitality.tres",
+		"res://scenes/combat/abilities/ab_regen.tres",
+		"res://scenes/combat/abilities/ab_poison.tres",
 	]
 
 	for path in paths:
